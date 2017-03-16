@@ -2,6 +2,7 @@ package graval
 
 import (
 	"io"
+	"net"
 	"os"
 	"time"
 )
@@ -49,9 +50,9 @@ type FTPDriver interface {
 	// returns - true if the file was deleted
 	DeleteFile(path string) bool
 
-	// params  - from_path, to_path
+	// params  - fromPath, toPath
 	// returns - true if the file was renamed
-	Rename(from_path string, to_path string) bool
+	Rename(fromPath string, toPath string) bool
 
 	// params  - path
 	// returns - true if the new directory was created
@@ -64,4 +65,9 @@ type FTPDriver interface {
 	// params  - desination path, an io.Reader containing the file data
 	// returns - true if the data was successfully persisted
 	PutFile(path string, reader io.Reader) bool
+}
+
+// FTPDriverSetRemoteAddress is an optional interface for setting remote address
+type FTPDriverSetRemoteAddress interface {
+	SetRemoteAddress(remoteAddress net.Addr)
 }

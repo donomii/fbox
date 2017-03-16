@@ -58,6 +58,10 @@ func newftpConn(tcpConn *net.TCPConn, driver FTPDriver, serverName string, passi
 	c.usingPbsz = false
 	c.usingProt = false
 
+	if remoteAddressDriver, ok := driver.(FTPDriverSetRemoteAddress); ok {
+		remoteAddressDriver.SetRemoteAddress(tcpConn.RemoteAddr())
+	}
+
 	if cryptoConfig.Implicit {
 		c.startTls()
 	} else {
