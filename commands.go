@@ -812,6 +812,11 @@ func (cmd commandRnto) Async() bool {
 }
 
 func (cmd commandRnto) Execute(conn *ftpConn, param string) {
+	if conn.renameFrom == "" {
+		conn.writeMessage(503, "Bad sequence of commands: use RNFR first.")
+		return
+	}
+
 	toPath := conn.buildPath(param)
 	if conn.driver.Rename(conn.renameFrom, toPath) {
 		conn.writeMessage(250, "File renamed")
