@@ -66,14 +66,9 @@ pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 		dir := hashare.FetchDirectory(d.Store, currentDir, d.BlockSize)
 		for i, v := range dir.Entries {
 				fmt.Printf("%v: %v (%v)\n", i,string(v.Name), hex.Dump(v.Id))
-				f:= os.FileInfo{
-				v.Name, 
-				1, 
-				os.ModeDir, 
-				time.Now.UTC(), 
-				false, 
-				nil,
-				}
+				
+				
+				f:= fbox.NewFileItem(string(v.Name), 10, time.Now().UTC())
 				files = append(files, f)
 		}
 
