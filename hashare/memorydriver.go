@@ -1,6 +1,7 @@
 package hashconnect
 
 import (
+"regexp"
 "log"
 "fmt"
 "encoding/hex"
@@ -153,28 +154,42 @@ func (d *HashareDriver) MakeDir(path string) bool {
 }
 
 func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, bool) {
-	if f, ok := d.Files[path]; ok && !f.File.IsDir() {
-		return ioutil.NopCloser(bytes.NewReader(f.Content[position:])), true
-	} else {
-		return nil, false
-	}
+pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
+	
+	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+	
+	//Get the name of our current working directory
+	currentDir := pathlets[len(pathlets)-1]
+
+	raw_content := hashare.FetchFile(d.Store, currentDir, d.BlockSize)
+
+	return ioutil.NopCloser(bytes.NewReader(raw_content[position:])), true
 }
 
 func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
-	if _, path_exists := d.Files[path]; !path_exists {
-		if _, path_parent_exists := d.Files[filepath.Dir(path)]; path_parent_exists {
-			bytes, err := ioutil.ReadAll(reader)
+	bytes, err := ioutil.ReadAll(reader)
 			if err != nil {
 				return false
 			}
 
-			d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
+			pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
+	
+			log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+			
+			//Get the name of our current working directory
+			//currentDir := pathlets[len(pathlets)-1]
+	
+			//pathlets = pathlets[0:len(pathlets)-1]
+			
+			splits := regexp.MustCompile("\\\\|/").Split(path, -1)
+			filename := splits[len(splits)-1]
+			
+			
+
+			
+	
+			hashare.PutBytes(d.Store, bytes, filename, pathlets, d.BlockSize, true)
+			//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
 
 			return true
-		} else {
-			return false
-		}
-	} else {
-		return false
-	}
 }

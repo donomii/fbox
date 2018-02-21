@@ -15,6 +15,8 @@ type HashareDriverFactory struct {
 
 func (f *HashareDriverFactory) NewDriver() (d fbox.FTPDriver, err error) {
 	return &HashareDriver{
+		Store: f.Store,
+		BlockSize: f.BlockSize,
 		Files:    f.Files,
 		Username: f.Username,
 		Password: f.Password,
