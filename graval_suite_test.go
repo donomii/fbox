@@ -1,4 +1,4 @@
-package graval_test
+package fbox_test
 
 import (
 	. "github.com/onsi/ginkgo"

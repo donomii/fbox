@@ -6,7 +6,7 @@
 //
 // There is a sample in-memory driver available - see the documentation for the
 // graval-mem package or the graval READEME for more details.
-package graval
+package fbox
 
 import (
 	"crypto/tls"

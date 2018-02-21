@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/koofr/graval"
-	"github.com/koofr/graval/memory"
+	"github.com/donomii/fbox"
+	"github.com/donomii/fbox/hashare"
 	"log"
 )
 
@@ -11,22 +11,36 @@ func main() {
 	port := 8021
 	username := "test"
 	password := "test"
-
-	files := map[string]*memory.MemoryFile{
-		"/": &memory.MemoryFile{graval.NewDirItem(""), nil},
+	debug := true
+	
+	files := map[string]*hashconnect.HashareFile{
+		"/": &hashconnect.HashareFile{fbox.NewDirItem(""), nil},
 	}
+	
+		//Switch log output off by default
+	if !debug {
+		log.SetOutput(ioutil.Discard)
+		log.SetFlags(0)
+	}
+	
+	//Open the repository
+	s := NewSQLStore(repository)
+	s.Init()
+	log.Println("Opened repository")
+	
+	
 
-	factory := &memory.MemoryDriverFactory{files, username, password}
+	factory := &hashconnect.HashareDriverFactory{s, username, password}
 
-	server := graval.NewFTPServer(&graval.FTPServerOpts{
+	server := fbox.NewFTPServer(&fbox.FTPServerOpts{
 		ServerName: "Example FTP server",
 		Factory:    factory,
 		Hostname:   host,
 		Port:       port,
-		PassiveOpts: &graval.PassiveOpts{
+		PassiveOpts: &fbox.PassiveOpts{
 			ListenAddress: host,
 			NatAddress:    host,
-			PassivePorts: &graval.PassivePorts{
+			PassivePorts: &fbox.PassivePorts{
 				Low:  42000,
 				High: 45000,
 			},

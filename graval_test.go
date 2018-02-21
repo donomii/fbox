@@ -1,4 +1,4 @@
-package graval_test
+package fbox_test
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"github.com/jehiah/go-strftime"
 	"github.com/koofr/go-netutils"
 	. "github.com/koofr/graval"
-	"github.com/koofr/graval/memory"
+	"github.com/donomii/fbox/memory"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"io"
