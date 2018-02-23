@@ -3,7 +3,6 @@ package hashconnect
 import (
 "regexp"
 "log"
-"fmt"
 "encoding/hex"
 
 	"bytes"
@@ -12,9 +11,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"sort"
-	"strings"
 	"time"
 )
 
@@ -48,14 +45,12 @@ func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
 }
 
 func (d *HashareDriver) ChangeDir(path string) bool {
-	if f, ok := d.Files[path]; ok && f.File.IsDir() {
+	
 		return true
-	} else {
-		return false
-	}
 }
 
 func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
+	log.Println("Fetching directory contents for", path)
 pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
 	
 	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
@@ -66,11 +61,15 @@ pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 	files := []os.FileInfo{}
 		dir := hashare.FetchDirectory(d.Store, currentDir, d.BlockSize)
 		for i, v := range dir.Entries {
-				fmt.Printf("%v: %v (%v)\n", i,string(v.Name), hex.Dump(v.Id))
+				log.Printf("%v: %v (%v)\n", i,string(v.Name), hex.Dump(v.Id))
 				
-				
+				if string(v.Type) == "dir" {
+				f:= fbox.NewDirItem(string(v.Name))
+				files = append(files, f)
+				} else {
 				f:= fbox.NewFileItem(string(v.Name), 10, time.Now().UTC())
 				files = append(files, f)
+				}
 		}
 
 		sort.Sort(&FilesSorter{files})
@@ -79,81 +78,43 @@ pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 }
 
 func (d *HashareDriver) DeleteDir(path string) bool {
-	if f, ok := d.Files[path]; ok && f.File.IsDir() {
-		haschildren := false
-		for p, _ := range d.Files {
-			if strings.HasPrefix(p, path+"/") {
-				haschildren = true
-				break
-			}
-		}
-
-		if haschildren {
-			return false
-		}
-
-		delete(d.Files, path)
-
-		return true
-	} else {
-		return false
-	}
+log.Println("Deleting file", path)
+	pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
+	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+	//Hashare treats files and directories mostly the same
+	hashare.DeleteFile(d.Store, pathlets, d.BlockSize, true)
+	return true
 }
 
 func (d *HashareDriver) DeleteFile(path string) bool {
-	if f, ok := d.Files[path]; ok && !f.File.IsDir() {
-		delete(d.Files, path)
-		return true
-	} else {
-		return false
-	}
+	log.Println("Deleting file", path)
+	pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
+	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+	hashare.DeleteFile(d.Store, pathlets, d.BlockSize, true)
+	return true
 }
 
 func (d *HashareDriver) Rename(from_path string, to_path string) bool {
-	if f, from_path_exists := d.Files[from_path]; from_path_exists {
-		if _, to_path_exists := d.Files[to_path]; !to_path_exists {
-			if _, to_path_parent_exists := d.Files[filepath.Dir(to_path)]; to_path_parent_exists {
-				if f.File.IsDir() {
-					delete(d.Files, from_path)
-					d.Files[to_path] = &HashareFile{fbox.NewDirItem(filepath.Base(to_path)), nil}
-					torename := make([]string, 0)
-					for p, _ := range d.Files {
-						if strings.HasPrefix(p, from_path+"/") {
-							torename = append(torename, p)
-						}
-					}
-					for _, p := range torename {
-						sf := d.Files[p]
-						delete(d.Files, p)
-						np := to_path + p[len(from_path):]
-						d.Files[np] = sf
-					}
-				} else {
-					delete(d.Files, from_path)
-					d.Files[to_path] = &HashareFile{fbox.NewFileItem(filepath.Base(to_path), f.File.Size(), f.File.ModTime()), f.Content}
-				}
-				return true
-			} else {
-				return false
-			}
-		} else {
-			return false
-		}
-	} else {
-		return false
-	}
+	from_pathlets := regexp.MustCompile("\\\\|/").Split(from_path, -1)
+	to_pathlets := regexp.MustCompile("\\\\|/").Split(to_path, -1)
+	filename := to_pathlets[len(to_pathlets)-1]
+	to_pathlets = to_pathlets[0:len(to_pathlets)-1]
+	hashare.MoveFile(d.Store, filename, hashare.StringArrayToBytes(from_pathlets), hashare.StringArrayToBytes(to_pathlets), d.BlockSize, true)
+	return true
 }
 
 func (d *HashareDriver) MakeDir(path string) bool {
-	if _, ok := d.Files[path]; ok {
-		return false
-	} else {
-		d.Files[path] = &HashareFile{fbox.NewDirItem(filepath.Base(path)), nil}
+log.Println("Making directory", path)
+pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
+splits := regexp.MustCompile("\\\\|/").Split(path, -1)
+		filename := splits[len(splits)-1]
+		//pathlets = pathlets[0:len(pathlets)-1]
+		hashare.MkDir(d.Store, pathlets, filename, d.BlockSize)
 		return true
-	}
 }
 
 func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, bool) {
+log.Println("Fetching file", path)
 pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
 	
 	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
@@ -167,6 +128,7 @@ pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 }
 
 func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
+			log.Println("Putting file", path)
 	bytes, err := ioutil.ReadAll(reader)
 			if err != nil {
 				return false
@@ -174,20 +136,21 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 
 			pathlets := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize) 
 	
-			log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+			
 			
 			//Get the name of our current working directory
 			//currentDir := pathlets[len(pathlets)-1]
 	
-			//pathlets = pathlets[0:len(pathlets)-1]
+			
 			
 			splits := regexp.MustCompile("\\\\|/").Split(path, -1)
 			filename := splits[len(splits)-1]
 			
+			//pathlets = pathlets[0:len(pathlets)-1]
 			
 
 			
-	
+			log.Println("Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
 			hashare.PutBytes(d.Store, bytes, filename, pathlets, d.BlockSize, true)
 			//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
 

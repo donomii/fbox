@@ -243,8 +243,12 @@ func (ftpConn *ftpConn) writeLines(code int, lines ...string) (wrote int, err er
 // prefix the path with something to scope the users access to a sandbox.
 func (ftpConn *ftpConn) buildPath(filename string) (fullPath string) {
 	
+	if len(filename) > 0 && filename[0:1] == "/" {
+		fullPath = filename
+	} else {
+		fullPath = ftpConn.namePrefix + "/" + filename
+	}
 
-	fullPath = filename
 	fullPath = strings.Replace(fullPath, "..", "", -1)
 	fullPath = strings.Replace(fullPath, "//", "/", -1)
 	if fullPath == "" { fullPath = "/" }
