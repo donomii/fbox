@@ -40,3 +40,9 @@ Linux can also mount FTP drives, but it requires installing software.
 
 There are a large selection of FTP clients for every platform, and they should all work with fbox.
 
+# Encryption
+
+fbox uses symmetric key encryption, so in order to access your encrypted filesystem, you must remember the key you created, and type it in every time you open fbox.  If you forget or lose your key, all your files are gone forever.  They are never coming back.  Using encryption is entirely at your own risk, and I am not responsible in any way for any data loss or leak due to using encryption.
+
+Actually, I'm not responsible at all for any problems caused by using this software.  It is open source, you're getting it for free, and if it doesn't work you're entitled to a full refund.
+
