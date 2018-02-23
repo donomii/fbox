@@ -13,7 +13,7 @@ func main() {
 	port := 8021
 	username := "test"
 	password := "test"
-	debug := false
+	debug := true
 	
 	files := map[string]*hashconnect.HashareFile{
 		"/": &hashconnect.HashareFile{fbox.NewDirItem(""), nil},
