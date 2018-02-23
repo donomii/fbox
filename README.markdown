@@ -2,7 +2,7 @@
 
 Filesystem in a box
 
-Get your own portable filestore.  It is secure, compressed and very convenient.
+A portable filestore.  It is secure, compressed and very convenient.
 
 ## Features
 
