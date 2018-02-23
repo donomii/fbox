@@ -6,10 +6,10 @@ A portable filestore.  It is secure, compressed and very convenient.
 
 ## Features
 
-* Snapshots
-* Compression
-* Encryption
-* Works well with sync programs
+* Snapshots (done)
+* Compression (done)
+* Encryption (done)
+* Works well with sync programs (in progress)
 
 ## Installation
 
