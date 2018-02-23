@@ -22,7 +22,7 @@ Get your own portable filestore.  It is secure, compressed and very convenient.
 
 ## Use
 
-fbox provides access to your filesystem through an FTP server.  It will print the url to connect to, after it starts up.
+fbox provides access to your filesystem through an FTP server.  Fbox will print the url of the server, after it starts up.
 
 You can access this url through normal FTP clients, including:
 
@@ -32,9 +32,9 @@ Most web browsers include an ftp client.  If you have Microsoft Edge, Firefox or
 
 ## Drive mount
 
-Windows has built in support for using FTP serveres as ordinary drives.  In a file explorer window, click on your computer, then find "mount drive" somewhere in the menu
+Windows has built in support for using FTP servers as ordinary drives.  In a file explorer window, click on your computer, then find "mount drive" somewhere in the menu.  Follow the instructions to connect to a network drive.
 
-Linux can also mount FTP drives, but it requires installing a package to do so.
+Linux can also mount FTP drives, but it requires installing software.
 
 ## Stand alone FTP clients
 
