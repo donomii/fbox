@@ -1,89 +1,48 @@
-# graval
+# fbox
 
-Go FTP server framework. By providing a simple driver class that
-responds to a handful of methods you can have a complete FTP server.
+Filesystem in a box
 
-Some sample use cases include persisting data to:
+A portable filestore.  It is secure, compressed and very convenient.
 
-* an Amazon S3 bucket
-* a relational database
-* redis
-* memory
+## Features
 
-Full documentation for the package is available on [godoc](http://godoc.org/github.com/koofr/graval)
+* Snapshots
+* Compression
+* Encryption
+* Works well with sync programs
 
 ## Installation
 
-    go get github.com/koofr/graval
+    go get github.com/donomii/fbox
+    go build github.com/donomii/fbox/example
 
 ## Example
 
-    go run example/example.go
+    example filesystem.box
 
-## Usage
+## Use
 
-To boot an FTP server you will need to provide a driver that speaks to your
-persistence layer - the required driver contract is listed below.
+fbox provides access to your filesystem through an FTP server.  Fbox will print the url of the server, after it starts up.
 
-Do not forget to seed math random in your main program. Otherwise passive ports will be predictable.
+You can access this url through normal FTP clients, including:
 
-    func main() {
-      rand.Seed(time.Now().UTC().UnixNano())
-      ...
-    }
+## Web browsers
 
-### The Driver Contract
+Most web browsers include an ftp client.  If you have Microsoft Edge, Firefox or Chrome, just paste the url into the address bar to access your files.
 
-Your driver MUST implement a number of simple methods. You can view the required
-contract in the package docs on [godoc](http://godoc.org/github.com/koofr/graval)
+## Drive mount
 
-## Contributors
+Windows has built in support for using FTP servers as ordinary drives.  In a file explorer window, click on your computer, then find "mount drive" somewhere in the menu.  Follow the instructions to connect to a network drive.
 
-* James Healy <james@yob.id.au> [http://www.yob.id.au](http://www.yob.id.au)
-* Luka Zakrajsek <luka@koofr.net> [http://koofr.net](http://koofr.net)
+Linux can also mount FTP drives, but it requires installing software.
 
-## Warning
+## Stand alone FTP clients
 
-FTP is an incredibly insecure protocol. Be careful about forcing users to authenticate
-with a username or password that are important.
+There are a large selection of FTP clients for every platform, and they should all work with fbox.
 
-## License
+# Encryption
 
-This library is distributed under the terms of the MIT License. See the included file for
-more detail.
+fbox uses symmetric key encryption, so in order to access your encrypted filesystem, you must remember the key you created, and type it in every time you open fbox.  If you forget or lose your key, all your files are gone forever.  They are never coming back.  Using encryption is entirely at your own risk, and I am not responsible in any way for any data loss or leak due to using encryption.
 
-## Contributing
+Actually, I'm not responsible at all for any problems caused by using this software.  It is open source, you're getting it for free, and if it doesn't work you're entitled to a full refund.
 
-All suggestions and patches welcome, preferably via a git repository I can pull from.
-If this library proves useful to you, please let me know.
-
-## Further Reading
-
-There are a range of RFCs that together specify the FTP protocol. In chronological
-order, the more useful ones are:
-
-* [http://tools.ietf.org/rfc/rfc959.txt](http://tools.ietf.org/rfc/rfc959.txt)
-* [http://tools.ietf.org/rfc/rfc1123.txt](http://tools.ietf.org/rfc/rfc1123.txt)
-* [http://tools.ietf.org/rfc/rfc2228.txt](http://tools.ietf.org/rfc/rfc2228.txt)
-* [http://tools.ietf.org/rfc/rfc2389.txt](http://tools.ietf.org/rfc/rfc2389.txt)
-* [http://tools.ietf.org/rfc/rfc2428.txt](http://tools.ietf.org/rfc/rfc2428.txt)
-* [http://tools.ietf.org/rfc/rfc3659.txt](http://tools.ietf.org/rfc/rfc3659.txt)
-* [http://tools.ietf.org/rfc/rfc4217.txt](http://tools.ietf.org/rfc/rfc4217.txt)
-
-For an english summary that's somewhat more legible than the RFCs, and provides
-some commentary on what features are actually useful or relevant 24 years after
-RFC959 was published:
-
-* [http://cr.yp.to/ftp.html](http://cr.yp.to/ftp.html)
-
-For a history lesson, check out Appendix III of RCF959. It lists the preceding
-(obsolete) RFC documents that relate to file transfers, including the ye old
-RFC114 from 1971, "A File Transfer Protocol"
-
-This library is heavily based on [em-ftpd](https://github.com/yob/em-ftpd), an FTPd
-framework with similar design goals within the ruby and EventMachine ecosystems. It
-worked well enough, but you know, callbacks and event loops make me something
-something.
-
-TLS implementation and some other commands are based on
-[pyftpdlib](https://code.google.com/p/pyftpdlib).
