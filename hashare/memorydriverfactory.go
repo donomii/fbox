@@ -6,19 +6,19 @@ import (
 )
 
 type HashareDriverFactory struct {
-	Store	*hashare.SqlStore
-	BlockSize	int
-	Files    map[string]*HashareFile
-	Username string
-	Password string
+	Store     *hashare.SqlStore
+	BlockSize int
+	Files     map[string]*HashareFile
+	Username  string
+	Password  string
 }
 
 func (f *HashareDriverFactory) NewDriver() (d fbox.FTPDriver, err error) {
 	return &HashareDriver{
-		Store: f.Store,
+		Store:     f.Store,
 		BlockSize: f.BlockSize,
-		Files:    f.Files,
-		Username: f.Username,
-		Password: f.Password,
+		Files:     f.Files,
+		Username:  f.Username,
+		Password:  f.Password,
 	}, nil
 }

@@ -1,11 +1,12 @@
 package main
 
 import (
-"io/ioutil"
+	"io/ioutil"
+	"log"
+
 	"github.com/donomii/fbox"
 	"github.com/donomii/fbox/hashare"
 	"github.com/donomii/hashare"
-	"log"
 )
 
 func main() {
@@ -14,26 +15,24 @@ func main() {
 	username := "test"
 	password := "test"
 	debug := true
-	
+
 	files := map[string]*hashconnect.HashareFile{
 		"/": &hashconnect.HashareFile{fbox.NewDirItem(""), nil},
 	}
-	
-		//Switch log output off by default
+
+	//Switch log output off by default
 	if !debug {
 		log.SetOutput(ioutil.Discard)
 		log.SetFlags(0)
 	}
-	
+
 	repository := "repository.cas"
 	//Open the repository
 	s := hashare.NewSQLStore(repository)
 	s.Init()
 	log.Println("Opened repository")
-	
-	
 
-	factory := &hashconnect.HashareDriverFactory{s, 10000000, files, username, password}
+	factory := &hashconnect.HashareDriverFactory{s, 500, files, username, password}
 
 	server := fbox.NewFTPServer(&fbox.FTPServerOpts{
 		ServerName: "Example FTP server",
