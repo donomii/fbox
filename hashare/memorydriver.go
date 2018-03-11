@@ -123,8 +123,9 @@ func (d *HashareDriver) Rename(from_path string, to_path string) bool {
 func (d *HashareDriver) MakeDir(path string) bool {
 	log.Println("Making directory", path)
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
-	if !ok {
-		return ok
+	if ok {
+		log.Println("Directory already exists!")
+		return !ok
 	}
 	splits := regexp.MustCompile("\\\\|/").Split(path, -1)
 	filename := splits[len(splits)-1]
@@ -157,8 +158,9 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 	}
 
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
-	if !ok {
-		return ok
+	if ok {
+		log.Println("File already exists!")
+		return !ok
 	}
 	//Get the name of our current working directory
 	//currentDir := pathlets[len(pathlets)-1]
