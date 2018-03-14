@@ -89,12 +89,14 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 }
 
 func (d *HashareDriver) DeleteDir(path string) bool {
-	log.Println("Deleting file", path)
+	log.Println("Deleting directory", path)
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 	if !ok {
-		return false
+		//Deleting a non-existant directory still counts as a win
+		return true
 	}
-	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+	//log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
+
 	//Hashare treats files and directories mostly the same
 	hashare.DeleteFile(d.Store, pathlets, d.BlockSize, true)
 	return true
@@ -104,7 +106,8 @@ func (d *HashareDriver) DeleteFile(path string) bool {
 	log.Println("Deleting file", path)
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 	if !ok {
-		return ok
+		//Deleting a file that doesn't exist still counts imo
+		return true
 	}
 	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
 	hashare.DeleteFile(d.Store, pathlets, d.BlockSize, true)
@@ -125,7 +128,9 @@ func (d *HashareDriver) MakeDir(path string) bool {
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 	if ok {
 		log.Println("Directory already exists!")
-		return !ok
+		//Creating a directory that already exists still counts
+		//We should probably update the mtime or something?
+		return true
 	}
 	splits := regexp.MustCompile("\\\\|/").Split(path, -1)
 	filename := splits[len(splits)-1]
@@ -151,15 +156,16 @@ func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, boo
 }
 
 func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
-	log.Println("Putting file", path)
+	log.Println("fbox: Putting file", path)
 	bytes, err := ioutil.ReadAll(reader)
 	if err != nil {
+		log.Println("fbox: Error reading file data:", err)
 		return false
 	}
 
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 	if ok {
-		log.Println("File already exists!")
+		log.Println("fbox: File already exists!")
 		return !ok
 	}
 	//Get the name of our current working directory
@@ -170,9 +176,10 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 
 	//pathlets = pathlets[0:len(pathlets)-1]
 
-	log.Println("Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
+	log.Println("fbox: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
 	hashare.PutBytes(d.Store, bytes, filename, pathlets, d.BlockSize, true)
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
 
+	log.Println("fbox: Put file complete:", path)
 	return true
 }
