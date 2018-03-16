@@ -1,7 +1,6 @@
 package fbox
 
 import (
-"log"
 	"bufio"
 	"bytes"
 	"crypto/rand"
@@ -10,8 +9,9 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"log"
 	"net"
-	
+
 	"strings"
 	"sync"
 	"time"
@@ -129,6 +129,7 @@ func (ftpConn *ftpConn) Serve() {
 			line, err := ftpConn.controlReader.ReadString('\n')
 			readMutex.RUnlock()
 			if err != nil {
+				log.Println("fbox: Bailing out of connection handling loop because:", err)
 				return
 			} else {
 				cmdObj := ftpConn.receiveLine(line)
@@ -140,6 +141,7 @@ func (ftpConn *ftpConn) Serve() {
 					case cmdCh <- cmdObj:
 						continue
 					case _ = <-time.After(10 * time.Second):
+						log.Println("fbox: Bailing out of connection handler loop because of timeout error")
 						return
 					}
 				}
@@ -149,6 +151,7 @@ func (ftpConn *ftpConn) Serve() {
 	}()
 
 	for cmd := range cmdCh {
+		log.Println("Handling command", cmd)
 		cmd.CmdObj.Execute(ftpConn, cmd.Param)
 
 		if !cmd.CmdObj.Async() {
@@ -242,7 +245,7 @@ func (ftpConn *ftpConn) writeLines(code int, lines ...string) (wrote int, err er
 // Obviously they MUST NOT just read the path off disk. The probably want to
 // prefix the path with something to scope the users access to a sandbox.
 func (ftpConn *ftpConn) buildPath(filename string) (fullPath string) {
-	
+
 	if len(filename) > 0 && filename[0:1] == "/" {
 		fullPath = filename
 	} else {
@@ -251,7 +254,9 @@ func (ftpConn *ftpConn) buildPath(filename string) (fullPath string) {
 
 	fullPath = strings.Replace(fullPath, "..", "", -1)
 	fullPath = strings.Replace(fullPath, "//", "/", -1)
-	if fullPath == "" { fullPath = "/" }
+	if fullPath == "" {
+		fullPath = "/"
+	}
 	log.Println("Converted ", filename, " to ", fullPath)
 	return
 }

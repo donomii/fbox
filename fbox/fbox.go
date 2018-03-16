@@ -17,7 +17,7 @@ func main() {
 	debug := true
 
 	files := map[string]*hashconnect.HashareFile{
-		"/": &hashconnect.HashareFile{fbox.NewDirItem(""), nil},
+		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0), nil},
 	}
 
 	//Switch log output off by default
