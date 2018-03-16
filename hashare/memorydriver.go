@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"log"
 	"regexp"
-	"strings"
+	_ "strings"
 
 	"bytes"
 	"io"
@@ -57,8 +57,8 @@ func (d *HashareDriver) ChangeDir(path string) bool {
 
 func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 	log.Println("Fetching directory contents for", path)
-	path = strings.TrimSuffix(path, "/-l")
-	path = strings.TrimSuffix(path, "/ls-l")
+	//path = strings.TrimSuffix(path, "/-l")
+	//path = strings.TrimSuffix(path, "/ls-l")
 	pathlets, ok := hashare.ResolvePath(d.Store, []byte(path), d.BlockSize)
 	if !ok {
 		log.Println("Could not find directory, returning error")
@@ -75,7 +75,7 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 		log.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
 
 		if string(v.Type) == "dir" {
-			f := fbox.NewDirItem(string(v.Name), v.Size)
+			f := fbox.NewDirItem(string(v.Name), v.Size, time.Now().UTC())
 			files = append(files, f)
 		} else {
 			f := fbox.NewFileItem(string(v.Name), v.Size, time.Now().UTC())
@@ -84,9 +84,9 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 	}
 	//Windows freaks out if it doesn't get at list one file in the file list
 	if len(files) == 0 {
-		f := fbox.NewDirItem(".", 0)
+		f := fbox.NewDirItem(".", 0, time.Now().UTC())
 		files = append(files, f)
-		f = fbox.NewDirItem("..", 0)
+		f = fbox.NewDirItem("..", 0, time.Now().UTC())
 		files = append(files, f)
 	}
 	sort.Sort(&FilesSorter{files})

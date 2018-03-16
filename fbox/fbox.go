@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"time"
 
 	"github.com/donomii/fbox"
 	"github.com/donomii/fbox/hashare"
@@ -17,7 +18,7 @@ func main() {
 	debug := true
 
 	files := map[string]*hashconnect.HashareFile{
-		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0), nil},
+		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0, time.Now().UTC()), nil},
 	}
 
 	//Switch log output off by default

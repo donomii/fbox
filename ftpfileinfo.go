@@ -39,12 +39,12 @@ func (info *ftpFileInfo) Sys() interface{} {
 // NewDirItem creates a new os.FileInfo that represents a single diretory. Use
 // this function to build the response to DirContents() in your FTPDriver
 // implementation.
-func NewDirItem(name string, size int64) os.FileInfo {
+func NewDirItem(name string, size int64, modtime time.Time) os.FileInfo {
 	d := new(ftpFileInfo)
 	d.name = name
 	d.bytes = size
 	d.mode = os.ModeDir | 0666
-	d.modtime = time.Now().UTC()
+	d.modtime = modtime
 	return d
 }
 

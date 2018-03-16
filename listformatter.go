@@ -2,10 +2,11 @@ package fbox
 
 import (
 	"bytes"
-	"github.com/jehiah/go-strftime"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/jehiah/go-strftime"
 )
 
 type listFormatter struct {
@@ -42,7 +43,7 @@ func (formatter *listFormatter) Detailed() string {
 		buffer.WriteString(file.Mode().String())
 		buffer.WriteString(" 1 owner group ")
 		buffer.WriteString(lpad(strconv.Itoa(int(file.Size())), 12))
-		buffer.WriteString(strftime.Format(" %b %d %H:%M ", file.ModTime()))
+		buffer.WriteString(strftime.Format(" %Y-%m-%dT%H:%M:%S ", file.ModTime()))
 		buffer.WriteString(file.Name())
 		buffer.WriteString("\r\n")
 	}
