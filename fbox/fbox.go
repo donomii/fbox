@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io/ioutil"
 	"log"
 	"time"
@@ -16,7 +17,20 @@ func main() {
 	username := "test"
 	password := "test"
 	debug := true
+	conf := hashare.Config{
+		Store:          nil,
+		Blocksize:      499,
+		UseEncryption:  true,
+		UseCompression: true,
+		EncryptionKey:  []byte("a very very very very secret key"),
+	}
 
+	flag.IntVar(&conf.Blocksize, "blocksize", 500, "Store data in chunks of this size")
+	flag.BoolVar(&conf.UseEncryption, "encrypt", false, "Encrypt every block")
+	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
+	var optStr string
+	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
+	conf.EncryptionKey = []byte(optStr)
 	files := map[string]*hashconnect.HashareFile{
 		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0, time.Now().UTC()), nil},
 	}
@@ -32,8 +46,8 @@ func main() {
 	s := hashare.NewSQLStore(repository)
 	s.Init()
 	log.Println("Opened repository")
-
-	factory := &hashconnect.HashareDriverFactory{s, 500, files, username, password}
+	conf.Store = s
+	factory := &hashconnect.HashareDriverFactory{conf, files, username, password}
 
 	server := fbox.NewFTPServer(&fbox.FTPServerOpts{
 		ServerName: "Example FTP server",
