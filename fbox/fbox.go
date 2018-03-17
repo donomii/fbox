@@ -21,7 +21,7 @@ func main() {
 		Store:          nil,
 		Blocksize:      499,
 		UseEncryption:  true,
-		UseCompression: true,
+		UseCompression: false,
 		EncryptionKey:  []byte("a very very very very secret key"),
 	}
 
@@ -30,7 +30,9 @@ func main() {
 	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
 	var optStr string
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
+	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
+
 	files := map[string]*hashconnect.HashareFile{
 		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0, time.Now().UTC()), nil},
 	}
@@ -47,6 +49,7 @@ func main() {
 	s.Init()
 	log.Println("Opened repository")
 	conf.Store = s
+	log.Printf("Config: %+v", conf)
 	factory := &hashconnect.HashareDriverFactory{conf, files, username, password}
 
 	server := fbox.NewFTPServer(&fbox.FTPServerOpts{
