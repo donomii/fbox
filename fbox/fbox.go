@@ -45,7 +45,7 @@ func main() {
 
 	repository := "repository.cas"
 	//Open the repository
-	s := hashare.NewSQLStore(repository)
+	s := hashare.NewFileStore(repository)
 	s.Init()
 	log.Println("Opened repository")
 	conf.Store = s
