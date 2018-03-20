@@ -94,27 +94,21 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 
 func (d *HashareDriver) DeleteDir(path string) bool {
 	log.Println("Deleting directory", path)
-	pathlets, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
-	if !ok {
-		//Deleting a non-existant directory still counts as a win
-		return true
-	}
+	pathlets := regexp.MustCompile("\\\\|/").Split(path, -1)
+
 	//log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
 
 	//Hashare treats files and directories mostly the same
-	hashare.DeleteFile(d.Conf.Store, pathlets, d.Conf, true)
+	hashare.DeleteF(d.Conf.Store, hashare.StringArrayToBytes(pathlets), d.Conf, true)
 	return true
 }
 
 func (d *HashareDriver) DeleteFile(path string) bool {
 	log.Println("fbox: Deleting file in DeleteFile", path)
-	pathlets, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
-	if !ok {
-		//Deleting a file that doesn't exist still counts imo
-		return true
-	}
-	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
-	hashare.DeleteFile(d.Conf.Store, pathlets, d.Conf, true)
+	pathlets := regexp.MustCompile("\\\\|/").Split(path, -1)
+
+	log.Println("Pathlets:", pathlets)
+	hashare.DeleteF(d.Conf.Store, hashare.StringArrayToBytes(pathlets), d.Conf, true)
 	return true
 }
 

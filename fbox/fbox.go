@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"os/exec"
 	"time"
 
 	"github.com/donomii/fbox"
@@ -29,7 +31,11 @@ func main() {
 	flag.BoolVar(&conf.UseEncryption, "encrypt", false, "Encrypt every block")
 	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
 	var optStr string
+	var optStoreType string
+	repository := "repository.cas"
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
+	flag.StringVar(&optStoreType, "type", "sql", "Repository type (sql or files)")
+	flag.StringVar(&repository, "repo", "filebox", "Path to repository directory")
 	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
 
@@ -43,9 +49,13 @@ func main() {
 		log.SetFlags(0)
 	}
 
-	repository := "repository.cas"
 	//Open the repository
-	s := hashare.NewFileStore(repository)
+	var s hashare.SiloStore
+	if optStoreType == "sql" {
+		s = hashare.NewSQLStore(repository)
+	} else {
+		s = hashare.NewFileStore(repository)
+	}
 	s.Init()
 	log.Println("Opened repository")
 	conf.Store = s
@@ -67,12 +77,17 @@ func main() {
 		},
 	})
 
-	log.Printf("Example FTP server listening on %s:%d", host, port)
-	log.Printf("Access: ftp://%s:%s@%s:%d/", username, password, host, port)
+	go func() {
+		log.Printf("FBOX FTP server listening on %s:%d", host, port)
+		log.Printf("Access: ftp://%s:%s@%s:%d/", username, password, host, port)
 
+		cmd := exec.Command("explorer.exe", fmt.Sprintf("ftp://%s:%s@%s:%d/", username, password, host, port))
+		cmd.Start()
+	}()
 	err := server.ListenAndServe()
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
 }
