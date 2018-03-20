@@ -113,9 +113,8 @@ func (d *HashareDriver) DeleteFile(path string) bool {
 }
 
 func (d *HashareDriver) Rename(from_path string, to_path string) bool {
-	to_pathlets := regexp.MustCompile("\\\\|/").Split(to_path, -1)
-	filename := to_pathlets[len(to_pathlets)-1]
-	hashare.MoveFile(d.Conf.Store, filename, from_path, to_path, d.Conf, true)
+
+	hashare.MoveFile(d.Conf.Store, from_path, to_path, d.Conf, true)
 	return true
 }
 
