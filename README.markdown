@@ -4,6 +4,8 @@ A secure, encrypted file store.
 
 ## Download
 
+Warning:  this is experimental software.  Do not use it for anything important.  Make backups often!
+
 [Windows](https://github.com/donomii/fbox/releases)
 
 [Linux](https://github.com/donomii/fbox/releases)
