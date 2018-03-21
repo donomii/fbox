@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+	log.Println("Application:", os.Args[0])
 	host := "127.0.0.1"
 	port := 8021
 	username := "test"
@@ -64,6 +65,8 @@ func main() {
 				//It's an SQLite filestore
 				s = hashare.NewSQLStore(repository)
 			}
+		} else {
+			s = hashare.NewSQLStore(repository)
 		}
 	} else {
 
@@ -97,11 +100,13 @@ func main() {
 		})
 
 		go func() {
+			time.Sleep(1 * time.Second)
 			log.Printf("FBOX FTP server listening on %s:%d", host, port)
 			log.Printf("Access: ftp://%s:%s@%s:%d/", username, password, host, port)
 
-			cmd := exec.Command("explorer.exe", fmt.Sprintf("ftp://%s:%s@%s:%d/", username, password, host, port))
+			cmd := exec.Command("c:/Windows/explorer.exe", fmt.Sprintf("ftp://%s:%s@%s:%d/", username, password, host, port))
 			cmd.Start()
+			log.Println("Launched explorer window")
 		}()
 		err := server.ListenAndServe()
 
