@@ -67,7 +67,7 @@ func main() {
 		}
 	} else {
 
-		if optStoreType == "sql" {
+		if optStoreType == "files" {
 			s = hashare.NewSQLStore(repository)
 		} else {
 			s = hashare.NewFileStore(repository)
