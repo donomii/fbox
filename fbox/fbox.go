@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"time"
 
@@ -34,11 +35,14 @@ func main() {
 	var optStoreType string
 	repository := "repository.cas"
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
-	flag.StringVar(&optStoreType, "type", "sql", "Repository type (sql or files)")
-	flag.StringVar(&repository, "repo", "filebox", "Path to repository directory")
+	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
+	flag.StringVar(&repository, "repo", "filebox.fbox", "Path to repository directory")
 	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
 
+	if flag.Arg(0) != "" {
+		repository = flag.Arg(0)
+	}
 	files := map[string]*hashconnect.HashareFile{
 		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0, time.Now().UTC()), nil},
 	}
@@ -48,13 +52,26 @@ func main() {
 		log.SetOutput(ioutil.Discard)
 		log.SetFlags(0)
 	}
-
-	//Open the repository
 	var s hashare.SiloStore
-	if optStoreType == "sql" {
-		s = hashare.NewSQLStore(repository)
+	//Open the repository
+	if optStoreType == "auto" {
+		//If the file exists, autodetect and open it
+		if stat, err := os.Stat(repository); err == nil {
+			if stat.Mode().IsDir() {
+				//It's a fileblocks repo
+				s = hashare.NewFileStore(repository)
+			} else {
+				//It's an SQLite filestore
+				s = hashare.NewSQLStore(repository)
+			}
+		}
 	} else {
-		s = hashare.NewFileStore(repository)
+
+		if optStoreType == "sql" {
+			s = hashare.NewSQLStore(repository)
+		} else {
+			s = hashare.NewFileStore(repository)
+		}
 	}
 	s.Init()
 	log.Println("Opened repository")
@@ -62,32 +79,34 @@ func main() {
 	log.Printf("Config: %+v", conf)
 	factory := &hashconnect.HashareDriverFactory{conf, files, username, password}
 
-	server := fbox.NewFTPServer(&fbox.FTPServerOpts{
-		ServerName: "Example FTP server",
-		Factory:    factory,
-		Hostname:   host,
-		Port:       port,
-		PassiveOpts: &fbox.PassiveOpts{
-			ListenAddress: host,
-			NatAddress:    host,
-			PassivePorts: &fbox.PassivePorts{
-				Low:  42000,
-				High: 45000,
+	for {
+		port = port + 1
+		server := fbox.NewFTPServer(&fbox.FTPServerOpts{
+			ServerName: "Example FTP server",
+			Factory:    factory,
+			Hostname:   host,
+			Port:       port,
+			PassiveOpts: &fbox.PassiveOpts{
+				ListenAddress: host,
+				NatAddress:    host,
+				PassivePorts: &fbox.PassivePorts{
+					Low:  42000,
+					High: 45000,
+				},
 			},
-		},
-	})
+		})
 
-	go func() {
-		log.Printf("FBOX FTP server listening on %s:%d", host, port)
-		log.Printf("Access: ftp://%s:%s@%s:%d/", username, password, host, port)
+		go func() {
+			log.Printf("FBOX FTP server listening on %s:%d", host, port)
+			log.Printf("Access: ftp://%s:%s@%s:%d/", username, password, host, port)
 
-		cmd := exec.Command("explorer.exe", fmt.Sprintf("ftp://%s:%s@%s:%d/", username, password, host, port))
-		cmd.Start()
-	}()
-	err := server.ListenAndServe()
+			cmd := exec.Command("explorer.exe", fmt.Sprintf("ftp://%s:%s@%s:%d/", username, password, host, port))
+			cmd.Start()
+		}()
+		err := server.ListenAndServe()
 
-	if err != nil {
-		log.Fatal(err)
+		if err != nil {
+			log.Println(err)
+		}
 	}
-
 }
