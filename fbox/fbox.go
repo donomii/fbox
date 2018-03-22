@@ -34,7 +34,7 @@ func main() {
 	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
 	var optStr string
 	var optStoreType string
-	repository := "repository.cas"
+	repository := os.Getenv("USERPROFILE") + "/Desktop"
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
 	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
 	flag.StringVar(&repository, "repo", "filebox.fbox", "Path to repository directory")
@@ -76,7 +76,7 @@ func main() {
 			s = hashare.NewFileStore(repository)
 		}
 	}
-	s.Init()
+	conf = s.Init(conf)
 	log.Println("Opened repository")
 	conf.Store = s
 	log.Printf("Config: %+v", conf)
