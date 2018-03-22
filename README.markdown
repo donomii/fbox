@@ -28,12 +28,9 @@ Keep your files securely in the cloud. Fbox can protect your privacy, preventing
 
 # Use
 
-Download and open fbox.exe. fbox will open a file window showing the contents of your file box, which starts off empty.
+After installing, right click on your desktop, select "New item...", then "Filebox".  A new filebox.fbox will appear.  Double click on this to open and use it.
 
-fbox will automatically create your file box, called filebox.fbx, in the same directory as fbox.exe. You can move this directory anywhere on your computer, so long as it is in the same directory as fbox.
-
-Double clicking on this file will open fbox to browse the files in this filebox.
-
+If you don't see a normal file browser window within a few seconds, find the FTP url in the fbox window, and paste that into your web browser.
 
 ## Installation
 
@@ -41,7 +38,7 @@ Double clicking on this file will open fbox to browse the files in this filebox.
 
 Download [fbox](https://github.com/donomii/fbox/releases)
 
-###Linux and MacOSX
+### Linux and MacOSX
 
 Install google's go language, then:
 
@@ -53,13 +50,17 @@ go build github.com/donomii/fbox/fbox.go
 
 Start fbox with the default options
 
-fbox
+    fbox
 
 Start fbox with encryption
 
-fbox --encrypt=1 --key="a 32-byte key123a 32-byte key123"
+    fbox --encrypt=1 --key="a 32-byte key123a 32-byte key123"
+    
+ connect to fbox via an ftp client
+ 
+     ftp localhost 8021
 
-## Advanced Use
+## Accessing fbox
 
 fbox provides access to your filesystem through an FTP server. Fbox will print the url of the server, after it starts up.
 
