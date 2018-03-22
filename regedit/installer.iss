@@ -13,13 +13,17 @@ AppPublisher=Donomii
 AppPublisherURL=https://donomii.github.io/fbox/
 AppSupportURL=https://donomii.github.io/fbox/
 AppUpdatesURL=https://donomii.github.io/fbox/
-DefaultDirName={pf}\Filebox
+DefaultDirName={userpf}\Filebox
 DefaultGroupName=Filebox
 AllowNoIcons=yes
 OutputDir=C:\Users\user\go\src\github.com\donomii\fbox\regedit
 OutputBaseFilename=setup-filebox
 Compression=lzma
 SolidCompression=yes
+PrivilegesRequired=lowest
+AppCopyright=GPL v3
+ChangesAssociations=True
+UninstallFilesDir={userpf}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -28,21 +32,21 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\user\go\src\github.com\donomii\fbox\regedit\fbox.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\user\go\src\github.com\donomii\fbox\regedit\fbox.exe"; DestDir: "{userpf}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Filebox"; Filename: "{app}\fbox.exe"
-Name: "{group}\{cm:UninstallProgram,Filebox}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\Filebox"; Filename: "{app}\fbox.exe"; Tasks: desktopicon
+Name: "{group}\Filebox"; Filename: "{userpf}\fbox.exe"
+Name: "{group}\{cm:UninstallProgram,Filebox}"; Filename: "{userpf}\{uninstallexe}"
+Name: "{commondesktop}\Filebox"; Filename: "{userpf}\fbox.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\fbox.exe"; Description: "{cm:LaunchProgram,Filebox}"; Flags: nowait postinstall skipifsilent
+Filename: "{userpf}\fbox.exe"; Description: "{cm:LaunchProgram,Filebox}"; Flags: nowait postinstall skipifsilent
 
 [Registry]
 ; Imported Registry File: "C:\Users\user\go\src\github.com\donomii\fbox\regedit\fbox_extension.reg"
 Root: HKCU; Subkey: Software\Classes\fbox_auto_file; ValueType: string; ValueData: "Filebox"; Flags: uninsdeletekey;
-Root: HKCU; Subkey: Software\Classes\fbox_auto_file\shell\open\command; ValueType: string; ValueData: """{app}\fbox.exe"" ""%1"""; Flags: uninsdeletekey;
+Root: HKCU; Subkey: Software\Classes\fbox_auto_file\shell\open\command; ValueType: string; ValueData: """{userpf}\fbox.exe"" ""%1"""; Flags: uninsdeletekey;
 Root: HKCU; Subkey: Software\Classes\.fbox; ValueType: string; ValueData: "fbox_auto_file"; Flags: uninsdeletekey;
-Root: HKCR; Subkey: .fbox\ShellNew; ValueType: string; ValueName: "NullFile"; ValueData: ""; Flags: uninsdeletekey;
-Root: HKCR; Subkey: fbox_auto_file\DefaultIcon; ValueType: string; ValueData: "%SystemRoot%\system32\imageres.dll,-101"; Flags: uninsdeletekey;
+Root: HKCU; Subkey: Software\Classes\.fbox\ShellNew; ValueType: string; ValueName: "NullFile"; ValueData: ""; Flags: uninsdeletekey;
+Root: HKCU; Subkey: Software\Classes\fbox_auto_file\DefaultIcon; ValueType: string; ValueData: "%SystemRoot%\system32\imageres.dll,-101"; Flags: uninsdeletekey;
