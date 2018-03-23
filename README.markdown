@@ -28,7 +28,7 @@ Keep your files securely in the cloud. Vort can protect your privacy, preventing
 
 # Use
 
-After installing, right click on your desktop, select "New item...", then "Vort".  A new filebox.Vort will appear.  Double click on this to open and use it.
+After installing, right click on your desktop, select "New item...", then "Vort".  A new Vort file will appear.  Double click on this to open and use it.
 
 If you don't see a normal file browser window within a few seconds, find the FTP url in the Vort window, and paste that into your web browser.
 
@@ -43,7 +43,7 @@ Download [Vort](https://github.com/donomii/Vort/releases)
 Install google's go language, then:
 
 go get github.com/donomii/Vort
-go build github.com/donomii/Vort/Vort/Vort.go
+go build github.com/donomii/Vort/vort/vort.go
 
 
 ## Command Line Examples
@@ -56,7 +56,7 @@ Start Vort with encryption
 
     vort --encrypt=1 --key="a 32-byte key123a 32-byte key123"
     
- connect to Vort via an ftp client
+ connect to Vort with an ftp client
  
      ftp localhost 8021
 
@@ -68,7 +68,7 @@ You can access this url through normal FTP clients, including:
 
 ## Web browsers
 
-Most web browsers include an ftp client. If you have Microsoft Edge, Firefox or Chrome, just paste the url into the address bar to access your files.
+Most web browsers include an ftp client. If you have Microsoft Edge, Firefox or Chrome, just paste the vort url into the address bar to access your files.
 
 ## Drive mount
 
