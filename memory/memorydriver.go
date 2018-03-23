@@ -2,7 +2,6 @@ package memory
 
 import (
 	"bytes"
-	"github.com/koofr/graval"
 	"io"
 	"io/ioutil"
 	"os"
@@ -10,6 +9,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/koofr/graval"
 )
 
 type MemoryDriver struct {
@@ -69,7 +70,6 @@ func (d *MemoryDriver) DirContents(path string) ([]os.FileInfo, bool) {
 }
 
 func (d *MemoryDriver) DeleteDir(path string) bool {
-	log.Println("Deleting directory", path)
 	if f, ok := d.Files[path]; ok && f.File.IsDir() {
 		haschildren := false
 		for p, _ := range d.Files {
