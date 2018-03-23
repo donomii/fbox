@@ -1,4 +1,4 @@
-# fbox
+# Vort
 
 A secure, encrypted file store.
 
@@ -6,17 +6,17 @@ A secure, encrypted file store.
 
 Warning:  this is experimental software.  Do not use it for anything important.  Make backups often!
 
-[Windows](https://github.com/donomii/fbox/releases)
+[Windows](https://github.com/donomii/Vort/releases)
 
-[Linux](https://github.com/donomii/fbox/releases)
+[Linux](https://github.com/donomii/Vort/releases)
 
-[MacOSX](https://github.com/donomii/fbox/releases)
+[MacOSX](https://github.com/donomii/Vort/releases)
 
 ## Your own digital safety box
 
-Keep your files securely on a USB key. Fbox can encrypt your file box, guaranteeing your privacy even if you lose your usb key.
+Keep your files securely on a USB key. Vort can encrypt your file box, guaranteeing your privacy even if you lose your usb key.
 
-Keep your files securely in the cloud. Fbox can protect your privacy, preventing your cloud host or government agency from reading your files.
+Keep your files securely in the cloud. Vort can protect your privacy, preventing your cloud host or government agency from reading your files.
 
 ## Features
 
@@ -28,41 +28,41 @@ Keep your files securely in the cloud. Fbox can protect your privacy, preventing
 
 # Use
 
-After installing, right click on your desktop, select "New item...", then "Filebox".  A new filebox.fbox will appear.  Double click on this to open and use it.
+After installing, right click on your desktop, select "New item...", then "Vort".  A new filebox.Vort will appear.  Double click on this to open and use it.
 
-If you don't see a normal file browser window within a few seconds, find the FTP url in the fbox window, and paste that into your web browser.
+If you don't see a normal file browser window within a few seconds, find the FTP url in the Vort window, and paste that into your web browser.
 
 ## Installation
 
 ### Windows
 
-Download [fbox](https://github.com/donomii/fbox/releases)
+Download [Vort](https://github.com/donomii/Vort/releases)
 
 ### Linux and MacOSX
 
 Install google's go language, then:
 
-go get github.com/donomii/fbox
-go build github.com/donomii/fbox/fbox.go
+go get github.com/donomii/Vort
+go build github.com/donomii/Vort/Vort/Vort.go
 
 
 ## Command Line Examples
 
-Start fbox with the default options
+Start Vort with the default options
 
-    fbox
+    vort
 
-Start fbox with encryption
+Start Vort with encryption
 
-    fbox --encrypt=1 --key="a 32-byte key123a 32-byte key123"
+    vort --encrypt=1 --key="a 32-byte key123a 32-byte key123"
     
- connect to fbox via an ftp client
+ connect to Vort via an ftp client
  
      ftp localhost 8021
 
-## Accessing fbox
+## Accessing Vort
 
-fbox provides access to your filesystem through an FTP server. Fbox will print the url of the server, after it starts up.
+Vort provides access to your filesystem through an FTP server. Vort will print the url of the server, after it starts up.
 
 You can access this url through normal FTP clients, including:
 
@@ -78,13 +78,13 @@ Linux can also mount FTP drives, but it requires installing software and some fi
 
 ## Stand alone FTP clients
 
-There are a large selection of FTP clients for every platform, and they should all work with fbox.
+There are a large selection of FTP clients for every platform, and they should all work with Vort.
 
 # Encryption
 
-Warning: fbox uses strong encryption. If you lose your encryption key, you will never be able to access your files again.
+Warning: Vort uses strong encryption. If you lose your encryption key, you will never be able to access your files again.
 
-fbox uses symmetric key encryption, so in order to access your encrypted filesystem, you must remember the key you created, and type it in every time you open fbox. If you forget or lose your key, all your files are gone forever. They are never coming back. Using encryption is entirely at your own risk, and I am not responsible in any way for any data loss or leak due to using encryption.
+Vort uses symmetric key encryption, so in order to access your encrypted filesystem, you must remember the key you created, and type it in every time you open Vort. If you forget or lose your key, all your files are gone forever. They are never coming back. Using encryption is entirely at your own risk, and I am not responsible in any way for any data loss or leak due to using encryption.
 
 # Disclaimer
 
