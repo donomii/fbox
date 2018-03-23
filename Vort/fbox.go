@@ -37,7 +37,7 @@ func main() {
 	repository := os.Getenv("USERPROFILE") + "/Desktop"
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
 	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
-	flag.StringVar(&repository, "repo", "filebox.fbox", "Path to repository directory")
+	flag.StringVar(&repository, "repo", "default.fbox", "Path to repository directory")
 	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
 
