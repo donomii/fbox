@@ -1017,6 +1017,7 @@ var _ = Describe("Graval", func() {
 
 						conn.Close()
 
+						time.Sleep(1 * time.Second)
 						conn, err = net.Dial("tcp", pasvAddr)
 						Expect(err).To(HaveOccurred())
 					})
