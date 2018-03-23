@@ -6,18 +6,18 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{ACC195CB-EB78-4913-99BC-D177DBD268AB}
-AppName=Filebox
+AppName=Vort
 AppVersion=alpha-0.1
-;AppVerName=Filebox alpha-0.1
+;AppVerName=Vort alpha-0.1
 AppPublisher=Donomii
 AppPublisherURL=https://donomii.github.io/fbox/
 AppSupportURL=https://donomii.github.io/fbox/
 AppUpdatesURL=https://donomii.github.io/fbox/
-DefaultDirName={userpf}\Filebox
-DefaultGroupName=Filebox
+DefaultDirName={userpf}\Vort
+DefaultGroupName=Vort
 AllowNoIcons=yes
 OutputDir=C:\Users\user\go\src\github.com\donomii\fbox\regedit
-OutputBaseFilename=setup-filebox
+OutputBaseFilename=setup-Vort
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=lowest
@@ -36,16 +36,16 @@ Source: "C:\Users\user\go\src\github.com\donomii\fbox\regedit\fbox.exe"; DestDir
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Filebox"; Filename: "{userpf}\fbox.exe"
-Name: "{group}\{cm:UninstallProgram,Filebox}"; Filename: "{userpf}\{uninstallexe}"
-Name: "{commondesktop}\Filebox"; Filename: "{userpf}\fbox.exe"; Tasks: desktopicon
+Name: "{group}\Vort"; Filename: "{userpf}\fbox.exe"
+Name: "{group}\{cm:UninstallProgram,Vort}"; Filename: "{userpf}\{uninstallexe}"
+Name: "{commondesktop}\Vort"; Filename: "{userpf}\fbox.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{userpf}\fbox.exe"; Description: "{cm:LaunchProgram,Filebox}"; Flags: nowait postinstall skipifsilent
+Filename: "{userpf}\fbox.exe"; Description: "{cm:LaunchProgram,Vort}"; Flags: nowait postinstall skipifsilent
 
 [Registry]
 ; Imported Registry File: "C:\Users\user\go\src\github.com\donomii\fbox\regedit\fbox_extension.reg"
-Root: HKCU; Subkey: Software\Classes\fbox_auto_file; ValueType: string; ValueData: "Filebox"; Flags: uninsdeletekey;
+Root: HKCU; Subkey: Software\Classes\fbox_auto_file; ValueType: string; ValueData: "Vort"; Flags: uninsdeletekey;
 Root: HKCU; Subkey: Software\Classes\fbox_auto_file\shell\open\command; ValueType: string; ValueData: """{userpf}\fbox.exe"" ""%1"""; Flags: uninsdeletekey;
 Root: HKCU; Subkey: Software\Classes\.fbox; ValueType: string; ValueData: "fbox_auto_file"; Flags: uninsdeletekey;
 Root: HKCU; Subkey: Software\Classes\.fbox\ShellNew; ValueType: string; ValueName: "NullFile"; ValueData: ""; Flags: uninsdeletekey;
