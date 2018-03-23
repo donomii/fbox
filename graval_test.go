@@ -5,12 +5,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/jehiah/go-strftime"
-	"github.com/koofr/go-netutils"
-	. "github.com/koofr/graval"
-	"github.com/donomii/fbox/memory"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"io"
 	"io/ioutil"
 	"net"
@@ -20,6 +14,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/donomii/fbox/memory"
+	"github.com/jehiah/go-strftime"
+	"github.com/koofr/go-netutils"
+	. "github.com/koofr/graval"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 func generateCert() (cert *tls.Certificate, err error) {
@@ -1324,7 +1325,7 @@ var _ = Describe("Graval", func() {
 
 					It("RNTO renamed", func() {
 						login()
-						res("RNTO renamed")(550, "Action not taken")
+						res("RNTO renamed")(503, "Bad sequence of commands: use RNFR first.")
 					})
 
 					It("RNFR file RNTO renamed", func() {
