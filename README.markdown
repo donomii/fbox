@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/donomii/Vort.svg?branch=master)](https://travis-ci.org/donomii/Vort)
+[![GoDoc](https://godoc.org/github.com/donomii/Vort?status.svg)](https://godoc.org/github.com/donomii/Vort)
+
 # Vort
 
 A secure, encrypted file store.
