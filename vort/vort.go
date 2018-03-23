@@ -23,21 +23,21 @@ func main() {
 	debug := true
 	conf := hashare.Config{
 		Store:          nil,
-		Blocksize:      499,
+		Blocksize:      500,
 		UseEncryption:  true,
 		UseCompression: false,
 		EncryptionKey:  []byte("a very very very very secret key"),
 	}
 
-	flag.IntVar(&conf.Blocksize, "blocksize", 500, "Store data in chunks of this size")
+	flag.IntVar(&conf.Blocksize, "blocksize", 1048576, "Store data in chunks of this size")
 	flag.BoolVar(&conf.UseEncryption, "encrypt", false, "Encrypt every block")
 	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
 	var optStr string
 	var optStoreType string
-	repository := os.Getenv("USERPROFILE") + "/Desktop"
+	repository := os.Getenv("USERPROFILE") + "/Desktop/default.fbox"
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
 	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
-	flag.StringVar(&repository, "repo", "default.fbox", "Path to repository directory")
+	flag.StringVar(&repository, "repo", repository, "Path to repository directory")
 	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
 
@@ -77,7 +77,7 @@ func main() {
 		}
 	}
 	conf = s.Init(conf)
-	log.Println("Opened repository")
+	log.Println("Opened repository:", repository)
 	conf.Store = s
 	log.Printf("Config: %+v", conf)
 	factory := &hashconnect.HashareDriverFactory{conf, files, username, password}
