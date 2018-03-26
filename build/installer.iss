@@ -34,7 +34,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\user\go\src\github.com\donomii\fbox\build\vort.exe"; DestDir: "{userpf}"; Flags: ignoreversion
+Source: "C:\Users\user\go\src\github.com\donomii\vort\build\vort.exe"; DestDir: "{userpf}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
