@@ -13,8 +13,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/donomii/fbox"
 	"github.com/donomii/hashare"
+	"github.com/donomii/vort"
 )
 
 type HashareDriver struct {
@@ -74,18 +74,18 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 		log.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
 
 		if string(v.Type) == "dir" {
-			f := fbox.NewDirItem(string(v.Name), v.Size, time.Now().UTC())
+			f := vort.NewDirItem(string(v.Name), v.Size, time.Now().UTC())
 			files = append(files, f)
 		} else {
-			f := fbox.NewFileItem(string(v.Name), v.Size, time.Now().UTC())
+			f := vort.NewFileItem(string(v.Name), v.Size, time.Now().UTC())
 			files = append(files, f)
 		}
 	}
 	//Windows freaks out if it doesn't get at list one file in the file list
 	if len(files) == 0 {
-		f := fbox.NewDirItem(".", 0, time.Now().UTC())
+		f := vort.NewDirItem(".", 0, time.Now().UTC())
 		files = append(files, f)
-		f = fbox.NewDirItem("..", 0, time.Now().UTC())
+		f = vort.NewDirItem("..", 0, time.Now().UTC())
 		files = append(files, f)
 	}
 	sort.Sort(&FilesSorter{files})

@@ -1,8 +1,8 @@
 package hashconnect
 
 import (
-	"github.com/donomii/fbox"
 	"github.com/donomii/hashare"
+	"github.com/donomii/vort"
 )
 
 type HashareDriverFactory struct {
@@ -12,7 +12,7 @@ type HashareDriverFactory struct {
 	Password string
 }
 
-func (f *HashareDriverFactory) NewDriver() (d fbox.FTPDriver, err error) {
+func (f *HashareDriverFactory) NewDriver() (d vort.FTPDriver, err error) {
 	return &HashareDriver{
 		Conf:     f.Conf,
 		Files:    f.Files,

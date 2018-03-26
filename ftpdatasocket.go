@@ -1,14 +1,15 @@
-package fbox
+package vort
 
 import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/koofr/goevent"
 	"math/rand"
 	"net"
 	"sync"
 	"time"
+
+	"github.com/koofr/goevent"
 )
 
 type PassivePorts struct {
