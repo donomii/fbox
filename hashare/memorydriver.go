@@ -30,13 +30,13 @@ func (d *HashareDriver) Authenticate(username string, password string) bool {
 }
 
 func (d *HashareDriver) Bytes(path string) int64 {
-	log.Println("fbox: Fetching file size for", path)
+	log.Println("vort: Fetching file size for", path)
 	meta, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
 	if !ok {
-		log.Println("fbox: File not found, returning -1")
+		log.Println("vort: File not found, returning -1")
 		return -1
 	}
-	log.Println("fbox: Returning file size", meta.Size)
+	log.Println("vort: Returning file size", meta.Size)
 	return meta.Size
 }
 
@@ -104,7 +104,7 @@ func (d *HashareDriver) DeleteDir(path string) bool {
 }
 
 func (d *HashareDriver) DeleteFile(path string) bool {
-	log.Println("fbox: Deleting file in DeleteFile", path)
+	log.Println("vort: Deleting file in DeleteFile", path)
 	pathlets := regexp.MustCompile("\\\\|/").Split(path, -1)
 
 	log.Println("Pathlets:", pathlets)
@@ -140,11 +140,11 @@ func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, boo
 }
 
 func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
-	log.Println("fbox: Putting file", path)
+	log.Println("vort: Putting file", path)
 
 	pathlets, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
 	if ok {
-		log.Println("fbox: File already exists!")
+		log.Println("vort: File already exists!")
 		return !ok
 	}
 	//Get the name of our current working directory
@@ -155,10 +155,10 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 
 	//pathlets = pathlets[0:len(pathlets)-1]
 
-	//log.Println("fbox: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
+	//log.Println("vort: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
 	hashare.PutStream(d.Conf.Store, reader, filename, pathlets, d.Conf, true)
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
 
-	log.Println("fbox: Put file complete:", path)
+	log.Println("vort: Put file complete:", path)
 	return true
 }
