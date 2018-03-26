@@ -9,9 +9,9 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/donomii/fbox"
-	"github.com/donomii/fbox/hashare"
 	"github.com/donomii/hashare"
+	"github.com/donomii/vort"
+	"github.com/donomii/vort/hashare"
 )
 
 func main() {
@@ -34,7 +34,7 @@ func main() {
 	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
 	var optStr string
 	var optStoreType string
-	repository := os.Getenv("USERPROFILE") + "/Desktop/default.fbox"
+	repository := os.Getenv("USERPROFILE") + "/Desktop/default.vort"
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
 	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
 	flag.StringVar(&repository, "repo", repository, "Path to repository directory")
@@ -45,7 +45,7 @@ func main() {
 		repository = flag.Arg(0)
 	}
 	files := map[string]*hashconnect.HashareFile{
-		"/": &hashconnect.HashareFile{fbox.NewDirItem("", 0, time.Now().UTC()), nil},
+		"/": &hashconnect.HashareFile{vort.NewDirItem("", 0, time.Now().UTC()), nil},
 	}
 
 	//Switch log output off by default
@@ -84,15 +84,15 @@ func main() {
 
 	for {
 		port = port + 1
-		server := fbox.NewFTPServer(&fbox.FTPServerOpts{
+		server := vort.NewFTPServer(&vort.FTPServerOpts{
 			ServerName: "Example FTP server",
 			Factory:    factory,
 			Hostname:   host,
 			Port:       port,
-			PassiveOpts: &fbox.PassiveOpts{
+			PassiveOpts: &vort.PassiveOpts{
 				ListenAddress: host,
 				NatAddress:    host,
-				PassivePorts: &fbox.PassivePorts{
+				PassivePorts: &vort.PassivePorts{
 					Low:  42000,
 					High: 45000,
 				},
@@ -101,7 +101,7 @@ func main() {
 
 		go func() {
 			time.Sleep(1 * time.Second)
-			log.Printf("FBOX FTP server listening on %s:%d", host, port)
+			log.Printf("vort FTP server listening on %s:%d", host, port)
 			log.Printf("Access: ftp://%s:%s@%s:%d/", username, password, host, port)
 
 			cmd := exec.Command("c:/Windows/explorer.exe", fmt.Sprintf("ftp://%s:%s@%s:%d/", username, password, host, port))
