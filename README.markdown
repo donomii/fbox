@@ -17,9 +17,9 @@ Warning:  this is experimental software.  Do not use it for anything important. 
 
 ## Your own digital safety box
 
-Keep your files securely on a USB key. Vort can encrypt your file box, guaranteeing your privacy even if you lose your usb key.
+Keep your files securely on a USB key or in the cloud. 
 
-Keep your files securely in the cloud. Vort can protect your privacy, preventing your cloud host or government agency from reading your files.
+Vort can encrypt your file box, guaranteeing your privacy even if you lose your usb key.  Vort protects your privacy, preventing your cloud host or government agency from reading your files.
 
 ## Features
 
