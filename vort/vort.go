@@ -55,7 +55,9 @@ func main() {
 	}
 	var s hashare.SiloStore
 	//Open the repository
-	if optStoreType == "auto" {
+	switch optStoreType {
+	case "auto":
+
 		//If the file exists, autodetect and open it
 		if stat, err := os.Stat(repository); err == nil {
 			if stat.Mode().IsDir() {
@@ -66,16 +68,21 @@ func main() {
 				s = hashare.NewSQLStore(repository)
 			}
 		} else {
+			//default repository is sql
 			s = hashare.NewSQLStore(repository)
 		}
-	} else {
-
-		if optStoreType == "files" {
+	case "http":
+		s = hashare.NewHttpStore(repository)
+	default:
+		if optStoreType != "files" {
+			log.Println("Opening a sql repository")
 			s = hashare.NewSQLStore(repository)
 		} else {
+			log.Println("Opening a files repository")
 			s = hashare.NewFileStore(repository)
 		}
 	}
+
 	conf = s.Init(conf)
 	log.Println("Opened repository:", repository)
 	conf.Store = s
