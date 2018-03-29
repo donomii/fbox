@@ -26,6 +26,8 @@ func main() {
 		Blocksize:      500,
 		UseEncryption:  true,
 		UseCompression: false,
+		UserName:       "",
+		Password:       "",
 		EncryptionKey:  []byte("a very very very very secret key"),
 	}
 
@@ -38,6 +40,8 @@ func main() {
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
 	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
 	flag.StringVar(&repository, "repo", repository, "Path to repository directory")
+	flag.StringVar(&conf.UserName, "username", "defaultUsername", "username for login")
+	flag.StringVar(&conf.Password, "password", "defaultPassword", "password for login")
 	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
 
