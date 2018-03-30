@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/donomii/Vort.svg?branch=master)](https://travis-ci.org/donomii/vort)
-[![GoDoc](https://godoc.org/github.com/donomii/Vort?status.svg)](https://godoc.org/github.com/donomii/vort)
+[![Build Status](https://travis-ci.org/donomii/vort.svg?branch=master)](https://travis-ci.org/donomii/vort)
+[![GoDoc](https://godoc.org/github.com/donomii/vort?status.svg)](https://godoc.org/github.com/donomii/vort)
 
 # Vort
 
