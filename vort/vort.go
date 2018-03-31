@@ -58,6 +58,7 @@ func main() {
 		log.SetFlags(0)
 	}
 	var s hashare.SiloStore
+
 	//Open the repository
 	switch optStoreType {
 	case "auto":
@@ -86,11 +87,19 @@ func main() {
 			s = hashare.NewFileStore(repository)
 		}
 	}
-
+	//Check credentials
+	if !s.Authenticate(conf) {
+		log.Println("Invalid login or server cannot be contacted.  Please check your credentials and network connection, and try again")
+		os.Exit(1)
+	}
 	conf = s.Init(conf)
 	log.Println("Opened repository:", repository)
 	conf.Store = s
-	log.Printf("Config: %+v", conf)
+	//log.Printf("Config: %+v", conf)
+	log.Println("Type:", optStoreType)
+	log.Println("Compression:", conf.UseCompression)
+	log.Println("Encryption:", conf.UseEncryption)
+	log.Println("Blocksize:", conf.Blocksize)
 	factory := &hashconnect.HashareDriverFactory{conf, files, username, password}
 
 	for {
