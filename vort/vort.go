@@ -92,8 +92,9 @@ func main() {
 		log.Println("Invalid login or server cannot be contacted.  Please check your credentials and network connection, and try again")
 		os.Exit(1)
 	}
+	log.Println("Authentication complete")
 	conf = s.Init(conf)
-	log.Println("Opened repository:", repository)
+	log.Println("Init complete, opened repository:", repository)
 	conf.Store = s
 	//log.Printf("Config: %+v", conf)
 	log.Println("Type:", optStoreType)
