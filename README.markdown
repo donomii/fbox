@@ -39,7 +39,7 @@ If you don't see a normal file browser window within a few seconds, find the FTP
 
 ### Windows
 
-Download [Vort](https://github.com/donomii/Vort/releases)
+Download [Vort](https://github.com/donomii/Vort/releases/latest)
 
 ### Linux and MacOSX
 
@@ -55,6 +55,10 @@ Start Vort with the default options
 
     vort
 
+Connect to a network share
+
+    	vort.exe --type=http --repo=http://localhost:80/
+        
 Start Vort with encryption
 
     vort --encrypt=1 --key="a 32-byte key123a 32-byte key123"
@@ -65,7 +69,7 @@ Start Vort with encryption
 
 ## Accessing Vort
 
-Vort provides access to your filesystem through an FTP server. Vort will print the url of the server, after it starts up.
+Vort provides access to your vort file through an FTP server. Vort will print the url of the server, after it starts up.
 
 You can access this url through normal FTP clients, including:
 
