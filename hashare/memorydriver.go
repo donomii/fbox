@@ -18,7 +18,7 @@ import (
 )
 
 type HashareDriver struct {
-	Conf     hashare.Config
+	Conf     *hashare.Config
 	Files    map[string]*HashareFile
 	Username string
 	Password string

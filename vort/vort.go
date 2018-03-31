@@ -21,7 +21,7 @@ func main() {
 	username := "test"
 	password := "test"
 	debug := true
-	conf := hashare.Config{
+	conf := &hashare.Config{
 		Store:          nil,
 		Blocksize:      500,
 		UseEncryption:  true,
