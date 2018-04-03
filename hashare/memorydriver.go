@@ -25,7 +25,7 @@ type HashareDriver struct {
 }
 
 func (d *HashareDriver) Authenticate(username string, password string) bool {
-	return true
+	return true //FIXME
 	return username == d.Username && password == d.Password
 }
 
@@ -120,17 +120,9 @@ func (d *HashareDriver) Rename(from_path string, to_path string) bool {
 
 func (d *HashareDriver) MakeDir(path string) bool {
 	log.Println("Making directory", path)
-	pathlets, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
-	if ok {
-		log.Println("Directory already exists!")
-		//Creating a directory that already exists still counts
-		//We should probably update the mtime or something?
-		return true
-	}
-	splits := regexp.MustCompile("\\\\|/").Split(path, -1)
-	filename := splits[len(splits)-1]
+
 	//pathlets = pathlets[0:len(pathlets)-1]
-	hashare.MkDir(d.Conf.Store, pathlets, filename, d.Conf)
+	hashare.MkDir(d.Conf.Store, path, d.Conf)
 	return true
 }
 
