@@ -93,22 +93,15 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 }
 
 func (d *HashareDriver) DeleteDir(path string) bool {
-	log.Println("Deleting directory", path)
-	pathlets := regexp.MustCompile("\\\\|/").Split(path, -1)
-
-	//log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
-
+	log.Println("vort: Deleting directory:", path)
 	//Hashare treats files and directories mostly the same
-	hashare.DeleteF(d.Conf.Store, hashare.StringArrayToBytes(pathlets), d.Conf, true)
+	hashare.DeleteFile(d.Conf.Store, path, d.Conf, true)
 	return true
 }
 
 func (d *HashareDriver) DeleteFile(path string) bool {
-	log.Println("vort: Deleting file in DeleteFile", path)
-	pathlets := regexp.MustCompile("\\\\|/").Split(path, -1)
-
-	log.Println("Pathlets:", pathlets)
-	hashare.DeleteF(d.Conf.Store, hashare.StringArrayToBytes(pathlets), d.Conf, true)
+	log.Println("vort: Deleting file:", path)
+	hashare.DeleteFile(d.Conf.Store, path, d.Conf, true)
 	return true
 }
 
