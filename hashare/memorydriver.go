@@ -1,16 +1,14 @@
 package hashconnect
 
 import (
-	"encoding/hex"
-	"log"
-	"regexp"
-	_ "strings"
-
 	"bytes"
+	"encoding/hex"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"sort"
+	_ "strings"
 	"time"
 
 	"github.com/donomii/hashare"
@@ -50,27 +48,22 @@ func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
 }
 
 func (d *HashareDriver) ChangeDir(path string) bool {
-	_, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
+	//Maybe we should have a DirectoryExists() API?
+	_, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
 	return ok
 }
 
 func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 	log.Println("Fetching directory contents for", path)
-	//path = strings.TrimSuffix(path, "/-l")
-	//path = strings.TrimSuffix(path, "/ls-l")
-	pathlets, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
+	//We have to return a list of files in the operating system format
+	files := []os.FileInfo{}
+
+	dirEntries, ok := hashare.List(d.Conf.Store, path, d.Conf)
 	if !ok {
 		log.Println("Could not find directory, returning error")
 		return nil, false
 	}
-	log.Println("Pathlets:", hashare.BytesArrayToString(pathlets))
-
-	//Get the name of our current working directory
-	currentDir := pathlets[len(pathlets)-1]
-
-	files := []os.FileInfo{}
-	dir := hashare.FetchDirectory(d.Conf.Store, currentDir, d.Conf)
-	for i, v := range dir.Entries {
+	for i, v := range dirEntries {
 		log.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
 
 		if string(v.Type) == "dir" {
@@ -81,7 +74,7 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 			files = append(files, f)
 		}
 	}
-	//Windows freaks out if it doesn't get at list one file in the file list
+	//Windows freaks out if it doesn't get at least one file in the file list
 	if len(files) == 0 {
 		f := vort.NewDirItem(".", 0, time.Now().UTC())
 		files = append(files, f)
@@ -127,21 +120,10 @@ func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, boo
 func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 	log.Println("vort: Putting file", path)
 
-	pathlets, ok := hashare.ResolvePath(d.Conf.Store, []byte(path), d.Conf)
-	if ok {
-		log.Println("vort: File already exists!")
-		return !ok
-	}
-	//Get the name of our current working directory
-	//currentDir := pathlets[len(pathlets)-1]
-
-	splits := regexp.MustCompile("\\\\|/").Split(path, -1)
-	filename := splits[len(splits)-1]
-
 	//pathlets = pathlets[0:len(pathlets)-1]
 
 	//log.Println("vort: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
-	hashare.PutStream(d.Conf.Store, reader, filename, pathlets, d.Conf, true)
+	hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true)
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
 
 	log.Println("vort: Put file complete:", path)
