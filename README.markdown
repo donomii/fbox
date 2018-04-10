@@ -58,34 +58,77 @@ Start Vort with the default options
 Connect to a network share
 
     	vort.exe --type=http --repo=http://localhost:80/
+		
+Open a vort file
+
+	vort myfiles.vort
         
 Start Vort with encryption
 
     vort --encrypt=1 --key="a 32-byte key123a 32-byte key123"
     
- connect to Vort with an ftp client
+ Connect to Vort with an ftp client
  
      ftp localhost 8021
+	
+Create and open a sqlite type store
+
+	vort --type=sqlite myfiles.vort
+
+Create and open a file blocks type store
+
+	vort --type=files myfiles.vort	
+	
 
 ## Accessing Vort
 
-Vort provides access to your vort file through an FTP server. Vort will print the url of the server, after it starts up.
+Vort provides access to your vort file store through a local FTP server. Vort will print the url of the server, after it starts up.
 
 You can access this url through normal FTP clients, including:
 
-## Web browsers
+## Web browsers in FTP mode
 
 Most web browsers include an ftp client. If you have Microsoft Edge, Firefox or Chrome, just paste the vort url into the address bar to access your files.
 
-## Drive mount
+## FTP "drive" mount 
 
-Windows has built in support for using FTP servers as ordinary drives. In a file explorer window, click on your computer, then find "Map network drive" somewhere in the menu. Follow the instructions to connect to your file box.
+Windows has built in support for using FTP servers as ordinary drives. In a file explorer window, click on your computer, then find "Map network drive" somewhere in the menu. Follow the instructions to connect to your vort file.
 
 Linux can also mount FTP drives, but it requires installing software and some fiddling about on the command line.
 
 ## Stand alone FTP clients
 
 There are a large selection of FTP clients for every platform, and they should all work with Vort.
+
+# Store types
+
+Vort supports many different formats, which allows me to test many different storage techniques.  There are currently three useful ones
+
+## SQLite
+
+vort can use a single-file sqlite database as a file store.  This is the best option if you want to send your vort store to someone else, upload it to a server, or otherwise move it around.
+
+It tends to slow down after you put ~100Gb into it, so if you want to store something bigger, try the files store.
+
+	vort --type=sqlite myfiles.vort
+
+Note: you only have to specify the type once, when creating your vort file.  vort will autodetect the store type of an existing file.
+
+## Files
+
+vort keeps its data in ordinary files.  This is probably slower than sqlite, but can handle almost any amount of data without slowing down (as much).  This is normally the best option for network servers (it is the default for vort-nfs).
+
+	vort --type=files myfiles.vort
+
+Note: you only have to specify the type once, when creating your vort directory.  vort will autodetect the type of an existing file.
+
+## http
+
+Technically not a file store, the http driver connects to a vort network share, and accesses the data on the server.
+
+	vort --type=http --repo=http://myserver.localnet/
+
+The slash on the end is required, for now.
 
 # Encryption
 
