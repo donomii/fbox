@@ -123,9 +123,12 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 	//pathlets = pathlets[0:len(pathlets)-1]
 
 	//log.Println("vort: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
-	hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true)
+	_, ok := hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true)
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
-
-	log.Println("vort: Put file complete:", path)
-	return true
+	if ok {
+		log.Println("vort: Put file complete:", path)
+	} else {
+		log.Println("vort: Put file failed:", path)
+	}
+	return ok
 }
