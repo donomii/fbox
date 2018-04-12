@@ -42,6 +42,8 @@ func main() {
 	flag.StringVar(&repository, "repo", repository, "Path to repository directory")
 	flag.StringVar(&conf.UserName, "username", "defaultUsername", "username for login")
 	flag.StringVar(&conf.Password, "password", "defaultPassword", "password for login")
+	flag.BoolVar(&debug, "debug", false, "Print vast amounts of debugging information")
+
 	flag.Parse()
 	conf.EncryptionKey = []byte(optStr)
 
