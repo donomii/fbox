@@ -93,7 +93,7 @@ func main() {
 		os.Exit(1)
 	}
 	log.Println("Authentication complete")
-	conf = s.Init(conf)
+	conf = hashare.Init(s, conf)
 	log.Println("Init complete, opened repository:", repository)
 	conf.Store = s
 	//log.Printf("Config: %+v", conf)
