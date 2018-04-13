@@ -1,7 +1,7 @@
 package hashconnect
 
 import (
-	"bytes"
+	//"bytes"
 	"encoding/hex"
 	"io"
 	"io/ioutil"
@@ -113,8 +113,9 @@ func (d *HashareDriver) MakeDir(path string) bool {
 }
 
 func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, bool) {
-	content, ok := hashare.GetFile(d.Conf.Store, path, position, d.Conf)
-	return ioutil.NopCloser(bytes.NewReader(content)), ok
+	reader, ok := hashare.GetFileStream(d.Conf.Store, path, position, d.Conf)
+	//FIXME reader is actually a readcloser, we just have the type wrong on GetFileStream
+	return ioutil.NopCloser(reader), ok
 }
 
 func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
