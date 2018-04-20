@@ -113,7 +113,7 @@ func (d *HashareDriver) MakeDir(path string) bool {
 }
 
 func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, bool) {
-	reader, ok := hashare.GetFileStream(d.Conf.Store, path, position, d.Conf)
+	reader, ok := hashare.GetFileStream(d.Conf.Store, path, position, -1, d.Conf)
 	//FIXME reader is actually a readcloser, we just have the type wrong on GetFileStream
 	return ioutil.NopCloser(reader), ok
 }
