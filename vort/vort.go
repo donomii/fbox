@@ -80,6 +80,8 @@ func main() {
 		}
 	case "http":
 		s = hashare.NewHttpStore(repository)
+	case "bolt":
+		s = hashare.NewBoltStore(repository)
 	default:
 		if optStoreType != "files" {
 			log.Println("Opening a sql repository")
@@ -91,18 +93,22 @@ func main() {
 	}
 	//Check credentials
 	if !s.Authenticate(conf) {
-		log.Println("Invalid login or server cannot be contacted.  Please check your credentials and network connection, and try again")
+		fmt.Println("Invalid login or server cannot be contacted.  Please check your credentials and network connection, and try again")
 		os.Exit(1)
 	}
 	log.Println("Authentication complete")
 	conf = hashare.Init(s, conf)
+	if conf.CAS_mux == nil || conf.Handler_mux == nil {
+		log.Printf("%+v", conf)
+		panic("Mutex not initialised")
+	}
 	log.Println("Init complete, opened repository:", repository)
-	conf.Store = s
 	//log.Printf("Config: %+v", conf)
 	log.Println("Type:", optStoreType)
 	log.Println("Compression:", conf.UseCompression)
 	log.Println("Encryption:", conf.UseEncryption)
 	log.Println("Blocksize:", conf.Blocksize)
+
 	factory := &hashconnect.HashareDriverFactory{conf, files, username, password}
 
 	for {
