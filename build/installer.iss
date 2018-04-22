@@ -16,7 +16,7 @@ AppUpdatesURL=https://donomii.github.io/Vort/
 DefaultDirName={userpf}\Vort
 DefaultGroupName=Vort
 AllowNoIcons=yes
-OutputDir=C:\Users\user\go\src\github.com\donomii\vort\build
+OutputDir=C:\Users\user\go\src\github.com\donomii\vort-ftprelay\build
 OutputBaseFilename=setup-Vort
 Compression=lzma
 SolidCompression=yes
@@ -34,7 +34,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\user\go\src\github.com\donomii\vort\build\vort.exe"; DestDir: "{userpf}"; Flags: ignoreversion
+Source: "C:\Users\user\go\src\github.com\donomii\vort-ftprelay\build\vort.exe"; DestDir: "{userpf}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -2,7 +2,7 @@ package hashconnect
 
 import (
 	"github.com/donomii/hashare"
-	"github.com/donomii/vort"
+	"github.com/donomii/vort-ftprelay"
 )
 
 type HashareDriverFactory struct {

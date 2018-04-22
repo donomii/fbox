@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/donomii/hashare"
-	"github.com/donomii/vort"
-	"github.com/donomii/vort/hashare"
+	"github.com/donomii/vort-ftprelay"
+	"github.com/donomii/vort-ftprelay/hashare"
 )
 
 func main() {

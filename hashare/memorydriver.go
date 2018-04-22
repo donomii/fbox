@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/donomii/hashare"
-	"github.com/donomii/vort"
+	"github.com/donomii/vort-ftprelay"
 )
 
 type HashareDriver struct {
@@ -88,13 +88,19 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 func (d *HashareDriver) DeleteDir(path string) bool {
 	log.Println("vort: Deleting directory:", path)
 	//Hashare treats files and directories mostly the same
-	hashare.DeleteFile(d.Conf.Store, path, d.Conf, true)
+	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, false, tr)
+		return ret
+	})
 	return true
 }
 
 func (d *HashareDriver) DeleteFile(path string) bool {
 	log.Println("vort: Deleting file:", path)
-	hashare.DeleteFile(d.Conf.Store, path, d.Conf, true)
+	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, false, tr)
+		return ret
+	})
 	return true
 }
 
