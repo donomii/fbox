@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/donomii/vort/memory"
+	"github.com/donomii/vort-ftprelay/memory"
 	"github.com/jehiah/go-strftime"
 	"github.com/koofr/go-netutils"
 	. "github.com/koofr/graval"
