@@ -19,8 +19,8 @@ Download [Vort](https://github.com/donomii/vort/releases/latest)
 
 Install google's go language, then:
 
-go get github.com/donomii/Vort
-go build github.com/donomii/Vort/vort/vort.go
+    go get github.com/donomii/Vort
+    go build github.com/donomii/Vort/vort/vort.go
 
 
 ## Command Line Examples
