@@ -3,12 +3,17 @@
 
 # Vort-ftprelay
 
+This is part of the [Vort](http://github.com/donomii/vort) project.
+
+vort-ftprelay provides access to vort files and vort fileservers through a FTP server.  Vort-relay starts an ftp server, that you connect to.  Your requests for files are translated to the native vort protocol.
+
+You will get much better performance from the command line client, or the native filesystem mount.  This relay is provided for situations where neither of those will work for you.
 
 ## Installation
 
 ### Windows
 
-Download [Vort](https://github.com/donomii/Vort/releases/latest)
+Download [Vort](https://github.com/donomii/vort/releases/latest)
 
 ### Linux and MacOSX
 
