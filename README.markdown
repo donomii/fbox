@@ -1,39 +1,8 @@
-[![Build Status](https://travis-ci.org/donomii/vort.svg?branch=master)](https://travis-ci.org/donomii/vort)
-[![GoDoc](https://godoc.org/github.com/donomii/vort?status.svg)](https://godoc.org/github.com/donomii/vort)
+[![Build Status](https://travis-ci.org/donomii/vort-ftprelay.svg?branch=master)](https://travis-ci.org/donomii/vort-ftprelay)
+[![GoDoc](https://godoc.org/github.com/donomii/vort-ftprelay?status.svg)](https://godoc.org/github.com/donomii/vort-ftprelay)
 
-# Vort
+# Vort-ftprelay
 
-A secure, encrypted file store.
-
-## Download
-
-Warning:  this is experimental software.  Do not use it for anything important.  Make backups often!
-
-[Windows](https://github.com/donomii/Vort/releases/latest)
-
-[Linux](https://github.com/donomii/Vort/releases/latest)
-
-[MacOSX](https://github.com/donomii/Vort/releases/latest)
-
-## Your own digital safety box
-
-Keep your files securely on a USB key or in the cloud. 
-
-Vort can encrypt your file box, guaranteeing your privacy even if you lose your usb key.  Vort protects your privacy, preventing your cloud host or government agency from reading your files.
-
-## Features
-
-* Undelete
-* Compression
-* Encryption
-* Works well with sync programs like DropBox and CloudMe
-* Windows, Linux and MacOSX
-
-# Use
-
-After installing, right click on your desktop, select "New item...", then "Vort".  A new Vort file will appear.  Double click on this to open and use it.
-
-If you don't see a normal file browser window within a few seconds, find the FTP url in the Vort window, and paste that into your web browser.
 
 ## Installation
 
