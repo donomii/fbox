@@ -1,52 +1,26 @@
-[![Build Status](https://travis-ci.org/donomii/vort.svg?branch=master)](https://travis-ci.org/donomii/vort)
-[![GoDoc](https://godoc.org/github.com/donomii/vort?status.svg)](https://godoc.org/github.com/donomii/vort)
+[![Build Status](https://travis-ci.org/donomii/vort-ftprelay.svg?branch=master)](https://travis-ci.org/donomii/vort-ftprelay)
+[![GoDoc](https://godoc.org/github.com/donomii/vort-ftprelay?status.svg)](https://godoc.org/github.com/donomii/vort-ftprelay)
 
-# Vort
+# Vort-ftprelay
 
-A secure, encrypted file store.
+This is part of the [Vort](http://github.com/donomii/vort) project.
 
-## Download
+vort-ftprelay provides access to vort files and vort fileservers through a FTP server.  Vort-relay starts an ftp server, that you connect to.  Your requests for files are translated to the native vort protocol.
 
-Warning:  this is experimental software.  Do not use it for anything important.  Make backups often!
-
-[Windows](https://github.com/donomii/Vort/releases/latest)
-
-[Linux](https://github.com/donomii/Vort/releases/latest)
-
-[MacOSX](https://github.com/donomii/Vort/releases/latest)
-
-## Your own digital safety box
-
-Keep your files securely on a USB key or in the cloud. 
-
-Vort can encrypt your file box, guaranteeing your privacy even if you lose your usb key.  Vort protects your privacy, preventing your cloud host or government agency from reading your files.
-
-## Features
-
-* Undelete
-* Compression
-* Encryption
-* Works well with sync programs like DropBox and CloudMe
-* Windows, Linux and MacOSX
-
-# Use
-
-After installing, right click on your desktop, select "New item...", then "Vort".  A new Vort file will appear.  Double click on this to open and use it.
-
-If you don't see a normal file browser window within a few seconds, find the FTP url in the Vort window, and paste that into your web browser.
+You will get much better performance from the command line client, or the native filesystem mount.  This relay is provided for situations where neither of those will work for you.
 
 ## Installation
 
 ### Windows
 
-Download [Vort](https://github.com/donomii/Vort/releases/latest)
+Download [Vort](https://github.com/donomii/vort/releases/latest)
 
 ### Linux and MacOSX
 
 Install google's go language, then:
 
-go get github.com/donomii/Vort
-go build github.com/donomii/Vort/vort/vort.go
+    go get github.com/donomii/Vort
+    go build github.com/donomii/Vort/vort/vort.go
 
 
 ## Command Line Examples
