@@ -36,7 +36,11 @@ func (d *HashareDriver) Bytes(path string) int64 {
 		return -1
 	}
 	log.Println("vort: Returning file size", meta.Size)
+	if meta.Size < 0 {
+		return 0
+	}
 	return meta.Size
+
 }
 
 func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
@@ -129,14 +133,21 @@ func (d *HashareDriver) DeleteFile(path string) bool {
 }
 
 func (d *HashareDriver) Rename(from_path string, to_path string) bool {
-
-	hashare.MoveFile(d.Conf.Store, from_path, to_path, d.Conf, true)
-	return true
+	//This also should be successful, but the spec says otherwise....
+	if from_path == to_path {
+		return false
+	}
+	ok := hashare.MoveFile(d.Conf.Store, from_path, to_path, d.Conf, true)
+	return ok
 }
 
 func (d *HashareDriver) MakeDir(path string) bool {
 	log.Println("Making directory", path)
-
+	_, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	if ok {
+		//This also should be success, but the spec...
+		return false
+	}
 	//pathlets = pathlets[0:len(pathlets)-1]
 	hashare.MkDir(d.Conf.Store, path, d.Conf)
 	return true
