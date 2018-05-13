@@ -1,6 +1,7 @@
 package hashconnect
 
 import (
+	"fmt"
 	//"bytes"
 	"encoding/hex"
 	"io"
@@ -130,7 +131,14 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 	//pathlets = pathlets[0:len(pathlets)-1]
 
 	//log.Println("vort: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
-	_, ok := hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true)
+	var ok bool
+	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) (ret hashare.Transaction) {
+		ret, ok = hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true, tr)
+		if !ok {
+			panic(fmt.Sprintf("Could not PutFile %v", path))
+		}
+		return
+	})
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
 	if ok {
 		log.Println("vort: Put file complete:", path)
