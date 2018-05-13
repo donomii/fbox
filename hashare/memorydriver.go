@@ -24,13 +24,19 @@ type HashareDriver struct {
 }
 
 func (d *HashareDriver) Authenticate(username string, password string) bool {
-	return true //FIXME
 	return username == d.Username && password == d.Password
 }
 
 func (d *HashareDriver) Bytes(path string) int64 {
 	log.Println("vort: Fetching file size for", path)
-	meta, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	var ok bool
+	var meta *hashare.DirectoryEntry
+	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+		//Hashare treats files and directories mostly the same
+		meta, ok = hashare.GetMeta(path, d.Conf, tr)
+		return tr
+	})
+
 	if !ok {
 		log.Println("vort: File not found, returning -1")
 		return -1
@@ -43,8 +49,19 @@ func (d *HashareDriver) Bytes(path string) int64 {
 
 }
 
+func getCurrentMeta(path string, conf *hashare.Config) (*hashare.DirectoryEntry, bool) {
+	var ok bool
+	var f *hashare.DirectoryEntry
+	hashare.WithTransaction(conf, func(tr hashare.Transaction) hashare.Transaction {
+		//Hashare treats files and directories mostly the same
+		f, ok = hashare.GetMeta(path, conf, tr)
+		return tr
+	})
+	return f, ok
+}
 func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
-	f, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+
+	f, ok := getCurrentMeta(path, d.Conf)
 	if ok {
 		return f.Modified, true
 	} else {
@@ -56,7 +73,14 @@ func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
 func (d *HashareDriver) ChangeDir(path string) bool {
 	//Maybe we should have a DirectoryExists() API?
 	log.Println("Changing to path", path)
-	_, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+
+	var ok bool
+
+	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+		//Hashare treats files and directories mostly the same
+		_, ok = hashare.GetMeta(path, d.Conf, tr)
+		return tr
+	})
 	return ok
 }
 
@@ -97,7 +121,7 @@ func (d *HashareDriver) DeleteDir(path string) bool {
 
 	//FTP thinks that it is an error to delete a file that doesn't exist
 	//Mission accomplished IMO, but we must follow the spec...
-	meta, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	meta, ok := getCurrentMeta(path, d.Conf)
 	if !ok {
 		return false
 	}
@@ -117,7 +141,7 @@ func (d *HashareDriver) DeleteFile(path string) bool {
 	log.Println("vort: Deleting file:", path)
 	//FTP thinks that it is an error to delete a file that doesn't exist
 	//Mission accomplished IMO, but we must follow the spec...
-	meta, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	meta, ok := getCurrentMeta(path, d.Conf)
 	if !ok {
 		return false
 	}
@@ -143,7 +167,7 @@ func (d *HashareDriver) Rename(from_path string, to_path string) bool {
 
 func (d *HashareDriver) MakeDir(path string) bool {
 	log.Println("Making directory", path)
-	_, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	_, ok := getCurrentMeta(path, d.Conf)
 	if ok {
 		//This also should be success, but the spec...
 		return false

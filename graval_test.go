@@ -3,10 +3,12 @@ package vort_test
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/textproto"
 	"os"
@@ -459,13 +461,43 @@ var _ = Describe("Graval", func() {
 				hashare.MkDir(files.Store, "/dir", files)
 				hashare.MkDir(files.Store, "/dir/subdir", files)
 
+				dir1, _ := hashare.List(files.Store, "/", files)
+				log.Println("Dumping /")
+
+				for i, v := range dir1 {
+					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
+				}
 				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
-					ret, ok := hashare.PutBytes(files.Store, make([]byte, 42), "/file", files, false, tr)
+					var ok bool
+					ret, ok = hashare.PutBytes(files.Store, make([]byte, 42), "/file", files, false, tr)
 					if !ok {
 						panic("Could not PutBytes")
 					}
+
 					return
 				})
+				dir2, _ := hashare.List(files.Store, "/", files)
+				log.Println("Dumping2 /")
+				for i, v := range dir2 {
+					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
+				}
+				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
+					ret = tr
+					meta, ok := hashare.GetMeta("/file", files, ret)
+					if !ok {
+						panic("Could not PutBytes")
+					}
+					meta.Modified = time.Date(2015, 1, 7, 14, 21, 0, 0, time.UTC)
+					ret, ok = hashare.SetMeta("/file", meta, files, ret)
+					return
+				})
+
+				dir, _ := hashare.List(files.Store, "/", files)
+				log.Println("Dumping /")
+
+				for i, v := range dir {
+					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
+				}
 
 				factory := &hashconnect.HashareDriverFactory{files, nil, "user", "password"}
 
@@ -765,7 +797,7 @@ var _ = Describe("Graval", func() {
 						bytes, err := resdata("LIST")
 						Expect(err).NotTo(HaveOccurred())
 
-						f, _ := hashare.GetMeta(files.Store, "/dir", files) //FIXME
+						f, _ := hashare.GetCurrentMeta("/dir", files) //FIXME
 						Expect(string(bytes)).To(Equal(fmt.Sprintf(
 							"drw-rw-rw- 1 owner group            0 %s dir\r\n"+
 								"-rw-rw-rw- 1 owner group           42 Jan 07 14:21 file\r\n"+
@@ -778,7 +810,7 @@ var _ = Describe("Graval", func() {
 
 						bytes, err := resdata("LIST dir")
 						Expect(err).NotTo(HaveOccurred())
-						f, _ := hashare.GetMeta(files.Store, "/dir/subdir", files) //FIXME
+						f, _ := hashare.GetCurrentMeta("/dir/subdir", files) //FIXME
 						Expect(string(bytes)).To(Equal(fmt.Sprintf(
 							"drw-rw-rw- 1 owner group            0 %s subdir\r\n"+
 								"\r\n",
@@ -826,7 +858,7 @@ var _ = Describe("Graval", func() {
 
 					It("MDTM dir", func() {
 						login()
-						f, _ := hashare.GetMeta(files.Store, "/dir", files) //FIXME
+						f, _ := hashare.GetCurrentMeta("/dir", files) //FIXME
 						res("MDTM dir")(213, strftime.Format("%Y%m%d%H%M%S", f.Modified))
 					})
 				})
