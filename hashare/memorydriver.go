@@ -125,7 +125,7 @@ func (d *HashareDriver) DeleteDir(path string) bool {
 	if !ok {
 		return false
 	}
-	dirEntries, ok = hashare.List(d.Conf.Store, path, d.Conf)
+	dirEntries, ok := hashare.List(d.Conf.Store, path, d.Conf)
 	if len(dirEntries) > 0 {
 		//Can't delete a directory while it still contains items, apparently
 		return false
