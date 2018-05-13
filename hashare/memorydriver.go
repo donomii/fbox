@@ -66,7 +66,7 @@ func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
 		return f.Modified, true
 	} else {
 		t1, _ := time.Parse(time.RFC3339, "1981-11-01T22:08:41+00:00")
-		return t1, true
+		return t1, false
 	}
 }
 
@@ -123,6 +123,11 @@ func (d *HashareDriver) DeleteDir(path string) bool {
 	//Mission accomplished IMO, but we must follow the spec...
 	meta, ok := getCurrentMeta(path, d.Conf)
 	if !ok {
+		return false
+	}
+	dirEntries, ok = hashare.List(d.Conf.Store, path, d.Conf)
+	if len(dirEntries) > 0 {
+		//Can't delete a directory while it still contains items, apparently
 		return false
 	}
 	if string(meta.Type) != "dir" {
