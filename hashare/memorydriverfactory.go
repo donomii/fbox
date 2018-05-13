@@ -15,7 +15,7 @@ type HashareDriverFactory struct {
 func (f *HashareDriverFactory) NewDriver() (d vort.FTPDriver, err error) {
 	return &HashareDriver{
 		Conf:     f.Conf,
-		Files:    f.Files,
+		Files:    nil,
 		Username: f.Username,
 		Password: f.Password,
 	}, nil

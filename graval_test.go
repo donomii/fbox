@@ -15,10 +15,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/donomii/vort-ftprelay/memory"
+	"github.com/donomii/hashare"
+
+	. "github.com/donomii/vort-ftprelay"
+	"github.com/donomii/vort-ftprelay/hashare"
 	"github.com/jehiah/go-strftime"
 	"github.com/koofr/go-netutils"
-	. "github.com/koofr/graval"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -55,7 +57,7 @@ type testVariant struct {
 var _ = Describe("Graval", func() {
 	var host string = "127.0.0.1"
 	var addr string
-	var files map[string]*memory.MemoryFile
+	var files *hashare.Config
 	var server *FTPServer
 	var clientConn net.Conn
 	var c *textproto.Conn
@@ -432,15 +434,40 @@ var _ = Describe("Graval", func() {
 			BeforeEach(func() {
 				port, err := netutils.UnusedPort()
 				Expect(err).NotTo(HaveOccurred())
+				/*
+					files = map[string]*memory.MemoryFile{
+						"/":           &memory.MemoryFile{NewDirItem(""), nil},
+						"/dir":        &memory.MemoryFile{NewDirItem("dir"), nil},
+						"/dir/subdir": &memory.MemoryFile{NewDirItem("subdir"), nil},
+						"/file":       &memory.MemoryFile{NewFileItem("file", 42, time.Date(2015, 1, 7, 14, 21, 0, 0, time.UTC)), make([]byte, 42)},
+					}
+				*/
 
-				files = map[string]*memory.MemoryFile{
-					"/":           &memory.MemoryFile{NewDirItem(""), nil},
-					"/dir":        &memory.MemoryFile{NewDirItem("dir"), nil},
-					"/dir/subdir": &memory.MemoryFile{NewDirItem("subdir"), nil},
-					"/file":       &memory.MemoryFile{NewFileItem("file", 42, time.Date(2015, 1, 7, 14, 21, 0, 0, time.UTC)), make([]byte, 42)},
+				files = &hashare.Config{
+					Debug:          false,
+					Store:          nil,
+					Blocksize:      500,
+					UseEncryption:  false,
+					UseCompression: false,
+					UserName:       "",
+					Password:       "",
+					EncryptionKey:  []byte("a very very very very secret key"),
 				}
+				store := hashare.NewGoCacheStore("FTP test")
+				files = hashare.Init(store, files)
 
-				factory := &memory.MemoryDriverFactory{files, "user", "password"}
+				hashare.MkDir(files.Store, "/dir", files)
+				hashare.MkDir(files.Store, "/dir/subdir", files)
+
+				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
+					ret, ok := hashare.PutBytes(files.Store, make([]byte, 42), "/file", files, false, tr)
+					if !ok {
+						panic("Could not PutBytes")
+					}
+					return
+				})
+
+				factory := &hashconnect.HashareDriverFactory{files, nil, "user", "password"}
 
 				server = NewFTPServer(&FTPServerOpts{
 					ServerName: "Test FTP server",
@@ -738,11 +765,12 @@ var _ = Describe("Graval", func() {
 						bytes, err := resdata("LIST")
 						Expect(err).NotTo(HaveOccurred())
 
+						f, _ := hashare.GetMeta(files.Store, "/dir", files) //FIXME
 						Expect(string(bytes)).To(Equal(fmt.Sprintf(
 							"drw-rw-rw- 1 owner group            0 %s dir\r\n"+
 								"-rw-rw-rw- 1 owner group           42 Jan 07 14:21 file\r\n"+
 								"\r\n",
-							strftime.Format("%b %d %H:%M", files["/dir"].File.ModTime()))))
+							strftime.Format("%b %d %H:%M", f.Modified))))
 					})
 
 					It("LIST dir", func() {
@@ -750,11 +778,11 @@ var _ = Describe("Graval", func() {
 
 						bytes, err := resdata("LIST dir")
 						Expect(err).NotTo(HaveOccurred())
-
+						f, _ := hashare.GetMeta(files.Store, "/dir/subdir", files) //FIXME
 						Expect(string(bytes)).To(Equal(fmt.Sprintf(
 							"drw-rw-rw- 1 owner group            0 %s subdir\r\n"+
 								"\r\n",
-							strftime.Format("%b %d %H:%M", files["/dir/subdir"].File.ModTime()))))
+							strftime.Format("%b %d %H:%M", f.Modified))))
 					})
 
 					It("LIST nonexisting", func() {
@@ -798,7 +826,8 @@ var _ = Describe("Graval", func() {
 
 					It("MDTM dir", func() {
 						login()
-						res("MDTM dir")(213, strftime.Format("%Y%m%d%H%M%S", files["/dir"].File.ModTime()))
+						f, _ := hashare.GetMeta(files.Store, "/dir", files) //FIXME
+						res("MDTM dir")(213, strftime.Format("%Y%m%d%H%M%S", f.Modified))
 					})
 				})
 

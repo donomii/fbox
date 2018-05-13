@@ -1,7 +1,7 @@
 package hashconnect
 
 import (
-	"fmt"
+
 	//"bytes"
 	"encoding/hex"
 	"io"
@@ -40,8 +40,9 @@ func (d *HashareDriver) Bytes(path string) int64 {
 }
 
 func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
-	if f, ok := d.Files[path]; ok {
-		return f.File.ModTime(), true
+	f, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	if ok {
+		return f.Modified, true
 	} else {
 		t1, _ := time.Parse(time.RFC3339, "1981-11-01T22:08:41+00:00")
 		return t1, true
@@ -50,6 +51,7 @@ func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
 
 func (d *HashareDriver) ChangeDir(path string) bool {
 	//Maybe we should have a DirectoryExists() API?
+	log.Println("Changing to path", path)
 	_, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
 	return ok
 }
@@ -88,8 +90,19 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 
 func (d *HashareDriver) DeleteDir(path string) bool {
 	log.Println("vort: Deleting directory:", path)
-	//Hashare treats files and directories mostly the same
+
+	//FTP thinks that it is an error to delete a file that doesn't exist
+	//Mission accomplished IMO, but we must follow the spec...
+	meta, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	if !ok {
+		return false
+	}
+	if string(meta.Type) != "dir" {
+		//We need different commands to delete files and directories, because reasons
+		return false
+	}
 	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+		//Hashare treats files and directories mostly the same
 		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, false, tr)
 		return ret
 	})
@@ -98,6 +111,16 @@ func (d *HashareDriver) DeleteDir(path string) bool {
 
 func (d *HashareDriver) DeleteFile(path string) bool {
 	log.Println("vort: Deleting file:", path)
+	//FTP thinks that it is an error to delete a file that doesn't exist
+	//Mission accomplished IMO, but we must follow the spec...
+	meta, ok := hashare.GetMeta(d.Conf.Store, path, d.Conf)
+	if !ok {
+		return false
+	}
+	if string(meta.Type) != "file" {
+		//We need different commands to delete files and directories, because reasons
+		return false
+	}
 	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
 		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, false, tr)
 		return ret
@@ -134,9 +157,7 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 	var ok bool
 	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) (ret hashare.Transaction) {
 		ret, ok = hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true, tr)
-		if !ok {
-			panic(fmt.Sprintf("Could not PutFile %v", path))
-		}
+
 		return
 	})
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}

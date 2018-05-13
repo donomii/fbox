@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"regexp"
 
 	"strings"
 	"sync"
@@ -245,19 +246,25 @@ func (ftpConn *ftpConn) writeLines(code int, lines ...string) (wrote int, err er
 // Obviously they MUST NOT just read the path off disk. The probably want to
 // prefix the path with something to scope the users access to a sandbox.
 func (ftpConn *ftpConn) buildPath(filename string) (fullPath string) {
-
-	if len(filename) > 0 && filename[0:1] == "/" {
-		fullPath = filename
+	oldPath := ftpConn.namePrefix
+	log.Println("Changing from ", fullPath, " to ", filename)
+	if filename == ".." {
+		re := regexp.MustCompile("/[^/]+$")
+		fullPath = re.ReplaceAllString(oldPath, "")
 	} else {
-		fullPath = ftpConn.namePrefix + "/" + filename
+		if len(filename) > 0 && filename[0:1] == "/" {
+			fullPath = filename
+		} else {
+			fullPath = ftpConn.namePrefix + "/" + filename
+		}
 	}
-
 	fullPath = strings.Replace(fullPath, "..", "", -1)
 	fullPath = strings.Replace(fullPath, "//", "/", -1)
+
 	if fullPath == "" {
 		fullPath = "/"
 	}
-	log.Println("Converted ", filename, " to ", fullPath)
+	log.Println("Converted ", oldPath, " to ", fullPath)
 	return
 }
 

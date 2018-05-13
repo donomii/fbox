@@ -114,6 +114,7 @@ func main() {
 	for {
 		port = port + 1
 		server := vort.NewFTPServer(&vort.FTPServerOpts{
+
 			ServerName: "Example FTP server",
 			Factory:    factory,
 			Hostname:   host,
