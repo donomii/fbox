@@ -3,7 +3,7 @@ package vort_test
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/hex"
+	//"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -465,7 +465,7 @@ var _ = Describe("Graval", func() {
 				log.Println("Dumping /")
 
 				for i, v := range dir1 {
-					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
+					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), v.Modified)
 				}
 				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
 					var ok bool
@@ -479,7 +479,7 @@ var _ = Describe("Graval", func() {
 				dir2, _ := hashare.List(files.Store, "/", files)
 				log.Println("Dumping2 /")
 				for i, v := range dir2 {
-					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
+					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), v.Modified)
 				}
 				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
 					ret = tr
@@ -488,15 +488,19 @@ var _ = Describe("Graval", func() {
 						panic("Could not PutBytes")
 					}
 					meta.Modified = time.Date(2015, 1, 7, 14, 21, 0, 0, time.UTC)
-					ret, ok = hashare.SetMeta("/file", meta, files, ret)
+					meta.Created = time.Date(2015, 1, 7, 14, 21, 0, 0, time.UTC)
+					ret, ok = hashare.SetMeta("/file", *meta, files, ret)
+					if !ok {
+						panic("Could not setmeta")
+					}
 					return
 				})
 
 				dir, _ := hashare.List(files.Store, "/", files)
-				log.Println("Dumping /")
+				log.Println("Dumping / after setmeta")
 
 				for i, v := range dir {
-					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
+					fmt.Printf("%v: %v (%v, %v)\n", i, string(v.Name), v.Modified, v.Created)
 				}
 
 				factory := &hashconnect.HashareDriverFactory{files, nil, "user", "password"}

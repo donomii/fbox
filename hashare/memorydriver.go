@@ -65,7 +65,7 @@ func (d *HashareDriver) ModifiedTime(path string) (time.Time, bool) {
 	if ok {
 		return f.Modified, true
 	} else {
-		t1, _ := time.Parse(time.RFC3339, "1981-11-01T22:08:41+00:00")
+		t1, _ := time.Parse(time.RFC3339, "1925-11-01T22:08:41+00:00")
 		return t1, false
 	}
 }
@@ -85,7 +85,7 @@ func (d *HashareDriver) ChangeDir(path string) bool {
 }
 
 func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
-	log.Println("Fetching directory contents for", path)
+	log.Println("DirContents: Fetching directory contents for", path)
 	//We have to return a list of files in the operating system format
 	files := []os.FileInfo{}
 
@@ -95,13 +95,17 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 		return nil, false
 	}
 	for i, v := range dirEntries {
-		log.Printf("%v: %v (%v)\n", i, string(v.Name), hex.Dump(v.Id))
-
+		log.Printf("DirContents: %v: %v (%v) %v\n", i, string(v.Name), hex.Dump(v.Id), v.Modified)
+		s := v.Size
+		if s < 0 {
+			s = 0
+		}
 		if string(v.Type) == "dir" {
-			f := vort.NewDirItem(string(v.Name), v.Size, time.Now().UTC())
+
+			f := vort.NewDirItem(string(v.Name), s, v.Modified)
 			files = append(files, f)
 		} else {
-			f := vort.NewFileItem(string(v.Name), v.Size, time.Now().UTC())
+			f := vort.NewFileItem(string(v.Name), s, v.Modified)
 			files = append(files, f)
 		}
 	}
@@ -113,6 +117,7 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 		files = append(files, f)
 	}
 	sort.Sort(&FilesSorter{files})
+	log.Print("File listing: %+v", files)
 	return files, true
 }
 
