@@ -66,6 +66,10 @@ var _ = Describe("Graval", func() {
 
 	quiet := os.Getenv("QUIET") != ""
 
+	if true {
+		log.SetOutput(ioutil.Discard)
+		log.SetFlags(0)
+	}
 	cert, certErr := generateCert()
 	if certErr != nil {
 		panic(certErr)
@@ -460,13 +464,14 @@ var _ = Describe("Graval", func() {
 
 				hashare.MkDir(files.Store, "/dir", files)
 				hashare.MkDir(files.Store, "/dir/subdir", files)
+				/*
+					dir1, _ := hashare.List(files.Store, "/", files)
+					log.Println("Dumping /")
 
-				dir1, _ := hashare.List(files.Store, "/", files)
-				log.Println("Dumping /")
-
-				for i, v := range dir1 {
-					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), v.Modified)
-				}
+					for i, v := range dir1 {
+						fmt.Printf("%v: %v (%v)\n", i, string(v.Name), v.Modified)
+					}
+				*/
 				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
 					var ok bool
 					ret, ok = hashare.PutBytes(files.Store, make([]byte, 42), "/file", files, false, tr)
@@ -476,11 +481,13 @@ var _ = Describe("Graval", func() {
 
 					return
 				})
-				dir2, _ := hashare.List(files.Store, "/", files)
+				/*dir2, _ := hashare.List(files.Store, "/", files)
+
 				log.Println("Dumping2 /")
 				for i, v := range dir2 {
 					fmt.Printf("%v: %v (%v)\n", i, string(v.Name), v.Modified)
 				}
+				*/
 				hashare.WithTransaction(files, func(tr hashare.Transaction) (ret hashare.Transaction) {
 					ret = tr
 					meta, ok := hashare.GetMeta("/file", files, ret)
@@ -496,13 +503,15 @@ var _ = Describe("Graval", func() {
 					return
 				})
 
-				dir, _ := hashare.List(files.Store, "/", files)
-				log.Println("Dumping / after setmeta")
+				/*
+					dir, _ := hashare.List(files.Store, "/", files)
 
-				for i, v := range dir {
-					fmt.Printf("%v: %v (%v, %v)\n", i, string(v.Name), v.Modified, v.Created)
-				}
+						log.Println("Dumping / after setmeta")
 
+						for i, v := range dir {
+							fmt.Printf("%v: %v (%v, %v)\n", i, string(v.Name), v.Modified, v.Created)
+						}
+				*/
 				factory := &hashconnect.HashareDriverFactory{files, nil, "user", "password"}
 
 				server = NewFTPServer(&FTPServerOpts{

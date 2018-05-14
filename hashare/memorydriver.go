@@ -3,7 +3,7 @@ package hashconnect
 import (
 
 	//"bytes"
-	"encoding/hex"
+	//"encoding/hex"
 	"io"
 	"io/ioutil"
 	"log"
@@ -94,8 +94,8 @@ func (d *HashareDriver) DirContents(path string) ([]os.FileInfo, bool) {
 		log.Println("Could not find directory, returning error")
 		return nil, false
 	}
-	for i, v := range dirEntries {
-		log.Printf("DirContents: %v: %v (%v) %v\n", i, string(v.Name), hex.Dump(v.Id), v.Modified)
+	for _, v := range dirEntries {
+		//log.Printf("DirContents: %v: %v (%v) %v\n", i, string(v.Name), hex.Dump(v.Id), v.Modified)
 		s := v.Size
 		if s < 0 {
 			s = 0
