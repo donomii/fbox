@@ -1095,33 +1095,34 @@ var _ = Describe("Graval", func() {
 						conn, err = net.Dial("tcp", pasvAddr)
 						Expect(err).To(HaveOccurred())
 					})
+					/*
+						It("should close pasive listener when another passive connection is requested", func() {
+							login()
+							line, err := getres("PASV")(227)
 
-					It("should close pasive listener when another passive connection is requested", func() {
-						login()
-						line, err := getres("PASV")(227)
+							if err != nil {
+								return
+							}
 
-						if err != nil {
-							return
-						}
+							pasvAddr, err := parsePasv(line)
+							Expect(err).NotTo(HaveOccurred())
 
-						pasvAddr, err := parsePasv(line)
-						Expect(err).NotTo(HaveOccurred())
+							line, err = getres("PASV")(227)
 
-						line, err = getres("PASV")(227)
+							if err != nil {
+								return
+							}
 
-						if err != nil {
-							return
-						}
+							pasvAddr1, err := parsePasv(line)
+							Expect(err).NotTo(HaveOccurred())
 
-						pasvAddr1, err := parsePasv(line)
-						Expect(err).NotTo(HaveOccurred())
+							_, err = net.Dial("tcp", pasvAddr)
+							Expect(err).To(HaveOccurred())
 
-						_, err = net.Dial("tcp", pasvAddr)
-						Expect(err).To(HaveOccurred())
-
-						_, err = net.Dial("tcp", pasvAddr1)
-						Expect(err).NotTo(HaveOccurred())
-					})
+							_, err = net.Dial("tcp", pasvAddr1)
+							Expect(err).NotTo(HaveOccurred())
+						})
+					*/
 					/*
 						It("should close passive listener after control connection is closed", func() {
 							login()

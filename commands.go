@@ -2,7 +2,7 @@ package vort
 
 import (
 	"fmt"
-	"log"
+
 	"strconv"
 	"strings"
 	"time"
