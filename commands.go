@@ -186,10 +186,7 @@ func (cmd commandCwd) Async() bool {
 }
 
 func (cmd commandCwd) Execute(conn *ftpConn, param string) {
-	fmt.Println("Received cwd for param:", param)
 	path := conn.buildPath(param)
-	fmt.Println("Carrying out cwd for path:", path)
-	log.Println("Carrying out cwd for path:", path)
 	if conn.driver.ChangeDir(path) {
 		conn.namePrefix = path
 		conn.writeMessage(250, "Directory changed to "+path)
