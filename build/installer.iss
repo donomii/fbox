@@ -23,7 +23,7 @@ SolidCompression=yes
 PrivilegesRequired=lowest
 AppCopyright=GPL v3
 ChangesAssociations=True
-UninstallFilesDir={userpf}
+UninstallFilesDir={userpf}\Vort
 UsePreviousAppDir=False
 VersionInfoVersion=0.3.0.0
 
@@ -34,16 +34,16 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\user\go\src\github.com\donomii\vort-ftprelay\build\vort.exe"; DestDir: "{userpf}"; Flags: ignoreversion
+Source: "C:\Users\user\go\src\github.com\donomii\vort-ftprelay\build\vort.exe"; DestDir: "{userpf}\Vort"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Vort"; Filename: "{userpf}\vort.exe"
-Name: "{group}\{cm:UninstallProgram,Vort}"; Filename: "{userpf}\{uninstallexe}"
-Name: "{commondesktop}\Vort"; Filename: "{userpf}\vort.exe"; Tasks: desktopicon
+Name: "{group}\Vort"; Filename: "{userpf}\Vort\vort.exe"
+Name: "{group}\{cm:UninstallProgram,Vort}"; Filename: "{userpf}\Vort\{uninstallexe}"
+Name: "{commondesktop}\Vort"; Filename: "{userpf}\Vort\vort.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{userpf}\vort.exe"; Description: "{cm:LaunchProgram,Vort}"; Flags: nowait postinstall skipifsilent
+Filename: "{userpf}\Vort\vort.exe"; Description: "{cm:LaunchProgram,Vort}"; Flags: nowait postinstall skipifsilent
 
 [Registry]
 ; Imported Registry File: "C:\Users\user\go\src\github.com\donomii\Vort\regedit\Vort_extension.reg"
