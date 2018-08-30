@@ -65,19 +65,7 @@ func main() {
 	switch optStoreType {
 	case "auto":
 
-		//If the file exists, autodetect and open it
-		if stat, err := os.Stat(repository); err == nil {
-			if stat.Mode().IsDir() {
-				//It's a fileblocks repo
-				s = hashare.NewFileStore(repository)
-			} else {
-				//It's an SQLite filestore
-				s = hashare.NewSQLStore(repository)
-			}
-		} else {
-			//default repository is sql
-			s = hashare.NewSQLStore(repository)
-		}
+        s = hashare.AutoOpen(repository)
 	case "http":
 		s = hashare.NewHttpStore(repository)
 	case "bolt":
