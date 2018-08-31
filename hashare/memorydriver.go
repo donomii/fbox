@@ -31,7 +31,7 @@ func (d *HashareDriver) Bytes(path string) int64 {
 	log.Println("vort: Fetching file size for", path)
 	var ok bool
 	var meta *hashare.DirectoryEntry
-	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+	hashare.WithTransaction(d.Conf, "Should never be logged", func(tr hashare.Transaction) hashare.Transaction {
 		//Hashare treats files and directories mostly the same
 		meta, ok = hashare.GetMeta(path, d.Conf, tr)
 		return tr
@@ -52,7 +52,7 @@ func (d *HashareDriver) Bytes(path string) int64 {
 func getCurrentMeta(path string, conf *hashare.Config) (*hashare.DirectoryEntry, bool) {
 	var ok bool
 	var f *hashare.DirectoryEntry
-	hashare.WithTransaction(conf, func(tr hashare.Transaction) hashare.Transaction {
+	hashare.WithTransaction(conf, "should never be logged", func(tr hashare.Transaction) hashare.Transaction {
 		//Hashare treats files and directories mostly the same
 		f, ok = hashare.GetMeta(path, conf, tr)
 		return tr
@@ -76,7 +76,7 @@ func (d *HashareDriver) ChangeDir(path string) bool {
 
 	var ok bool
 
-	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+	hashare.WithTransaction(d.Conf, "should never be logged", func(tr hashare.Transaction) hashare.Transaction {
 		//Hashare treats files and directories mostly the same
 		_, ok = hashare.GetMeta(path, d.Conf, tr)
 		return tr
@@ -139,9 +139,9 @@ func (d *HashareDriver) DeleteDir(path string) bool {
 		//We need different commands to delete files and directories, because reasons
 		return false
 	}
-	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
+	hashare.WithTransaction(d.Conf, "Delete file " + path, func(tr hashare.Transaction) hashare.Transaction {
 		//Hashare treats files and directories mostly the same
-		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, false, tr)
+		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, tr)
 		return ret
 	})
 	return true
@@ -159,8 +159,8 @@ func (d *HashareDriver) DeleteFile(path string) bool {
 		//We need different commands to delete files and directories, because reasons
 		return false
 	}
-	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) hashare.Transaction {
-		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, false, tr)
+	hashare.WithTransaction(d.Conf, "Delete file " + path, func(tr hashare.Transaction) hashare.Transaction {
+		ret, _ := hashare.DeleteFile(d.Conf.Store, path, d.Conf, tr)
 		return ret
 	})
 	return true
@@ -171,7 +171,11 @@ func (d *HashareDriver) Rename(from_path string, to_path string) bool {
 	if from_path == to_path {
 		return false
 	}
-	ok := hashare.MoveFile(d.Conf.Store, from_path, to_path, d.Conf, true)
+	var ok bool
+	hashare.WithTransaction(d.Conf, "Move file " + from_path + " to " + to_path, func(tr hashare.Transaction) hashare.Transaction {
+		tr, ok = hashare.MoveFile(d.Conf.Store, from_path, to_path, d.Conf, tr)
+		return tr
+	})
 	return ok
 }
 
@@ -183,8 +187,11 @@ func (d *HashareDriver) MakeDir(path string) bool {
 		return false
 	}
 	//pathlets = pathlets[0:len(pathlets)-1]
-	hashare.MkDir(d.Conf.Store, path, d.Conf)
-	return true
+	hashare.WithTransaction(d.Conf, "Make directory " + path, func(tr hashare.Transaction) hashare.Transaction {
+		tr, ok = hashare.MkDir(d.Conf.Store, path, d.Conf, tr)
+		return tr
+	})
+	return ok
 }
 
 func (d *HashareDriver) GetFile(path string, position int64) (io.ReadCloser, bool) {
@@ -200,9 +207,8 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 
 	//log.Println("vort: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
 	var ok bool
-	hashare.WithTransaction(d.Conf, func(tr hashare.Transaction) (ret hashare.Transaction) {
+	hashare.WithTransaction(d.Conf, "Put file " + path, func(tr hashare.Transaction) (ret hashare.Transaction) {
 		ret, ok = hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true, tr)
-
 		return
 	})
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
