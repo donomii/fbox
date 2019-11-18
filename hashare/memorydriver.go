@@ -208,7 +208,7 @@ func (d *HashareDriver) PutFile(path string, reader io.Reader) bool {
 	//log.Println("vort: Pathlets for putbytes:", hashare.BytesArrayToString(pathlets))
 	var ok bool
 	hashare.WithTransaction(d.Conf, "Put file " + path, func(tr hashare.Transaction) (ret hashare.Transaction) {
-		ret, ok = hashare.PutStream(d.Conf.Store, reader, path, d.Conf, true, tr)
+		ret, ok = hashare.PutStream(d.Conf.Store, reader, path, d.Conf, tr)
 		return
 	})
 	//d.Files[path] = &HashareFile{fbox.NewFileItem(filepath.Base(path), int64(len(bytes)), time.Now().UTC()), bytes}
