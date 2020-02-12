@@ -64,8 +64,7 @@ func main() {
 	//Open the repository
 	switch optStoreType {
 	case "auto":
-
-        s = hashare.AutoOpen(repository)
+        s = hashare.AutoOpen(repository, conf.UseCompression, conf.UseCache)
 	case "http":
 		s = hashare.NewHttpStore(repository)
 	case "bolt":
