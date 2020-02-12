@@ -14,7 +14,14 @@ import (
 	"github.com/donomii/vort-ftprelay/hashare"
 )
 
+var ( //Set by compiler
+	buildTime  string = "Development build"
+	commitHash string = "Development build"
+)
+
 func main() {
+	fmt.Printf("Build Time: %s\n", buildTime)
+	fmt.Printf("Commit Hash: %s\n", commitHash)
 	log.Println("Application:", os.Args[0])
 	host := "127.0.0.1"
 	port := 8021
@@ -36,7 +43,7 @@ func main() {
 	flag.BoolVar(&conf.UseCompression, "compress", true, "Compress every block")
 	var optStr string
 	var optStoreType string
-	repository := os.Getenv("USERPROFILE") + "/Desktop/default.vort"
+	repository := ""
 	flag.StringVar(&optStr, "key", "a very very very very secret key", "Encryption key")
 	flag.StringVar(&optStoreType, "type", "auto", "Repository type (sql or files)")
 	flag.StringVar(&repository, "repo", repository, "Path to repository directory")
@@ -50,6 +57,7 @@ func main() {
 	if flag.Arg(0) != "" {
 		repository = flag.Arg(0)
 	}
+	fmt.Printf("Opening repository: %v\n", repository)
 	files := map[string]*hashconnect.HashareFile{
 		"/": &hashconnect.HashareFile{vort.NewDirItem("", 0, time.Now().UTC()), nil},
 	}
